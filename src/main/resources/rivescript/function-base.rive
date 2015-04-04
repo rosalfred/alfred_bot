@@ -1,0 +1,17 @@
+//#############################################################################
+// Topics
+//#############################################################################
+
+> topic general
+    
+    // Cancel
+    
+    + (abandon [*]|lais [*] tomb [*]|change de sujet)
+    - <set find= >{@tu devrais avoir honte}{topic=random}
+    - <set find= >Très bien, je <star>.{topic=random}
+    
+    + tu devrais avoir honte
+    - Désoler, pour mon manque de pertinance.
+    - {@congratule moi}
+    
+< topic

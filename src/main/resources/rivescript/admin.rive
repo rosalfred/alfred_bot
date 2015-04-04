@@ -1,0 +1,50 @@
+// Administrative functions.
+
+! array developper = concepteur maitre propriétaire
+! array help = help aide
+^ aide-moi
+
++ not implement
+- Fonction non implémentée.
+
++ arrêt du système{weight=10000}
+* <id> eq <bot master> => arrêt du système... <call>script.shutdown</call>
+- {@administrateur seulement}
+
++ administrateur seulement
+- Cette commande ne peut être utilisée que par l'administrateur. Désoler <id>.
+
++ quel [*] es [*] ton [adress *] ip
+- Votre adresse IP est <call>script.get_ip</call>
+
++ quel [*] es [*] topic *
+- votre topic est <get topic>
+
++ je suis ton @developper
+* <id> == <bot master> => Tu es mon développeur. Bonjour <id> !
+- <random>Négatif[Non</random>, <bot master> est mon concepteur.
+
++ ping
+- pong
+
++ syn
+- ack
+
++ (yep|plop)
+- yes...
+
+> object shutdown perl
+	my ($rs) = @_;
+
+	# Shut down.
+	exit(0);
+< object
+
+> object shutdown python
+	# Shut down
+	exit(0)
+< object
+
+> object ip python
+    return "not implement"
+< object

@@ -1,0 +1,14 @@
+! version = 2.0
+
+! array wikipedia = wikipedia wikipédia
+
+// Find on wikipedia
++ @find sur [:] @wikipedia *
+- <set find={formal}<star>{/formal}>Tu veux que je recherche : <get find>, sur wikipedia?{topic=wikipedia} / TODO
+
+// Alias of Find wikipedia
++ @wikipedia *
+@ trouve sur wikipedia <star>
+
++ @find * sur @wikipedia
+@ trouve sur wikipedia <star>

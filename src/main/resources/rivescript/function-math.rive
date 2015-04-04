@@ -1,0 +1,48 @@
+
++ addition # a #
+- <star1> + <star2> = <call>add <star1> <star2></call>
+
++ # + #
+@ addition <star1> a <star2>
+
++ # plus #
+@ addition <star1> a <star2>
+
++ soustrait # a #
+- <star1> - <star2> = <call>substract <star1> <star2></call>
+
++ multiplie # par #
+- <star1> multiplié par <star2> = <call>multiply <star1> <star2></call>
+
++ divise # par #
+- <star1> divisé par <star2> = <call>divise <star1> <star2></call>
+
++ modulo [de] # par #
+- <star1> divisé par <star2> modulo de <call>modulo <star1> <star2></call>
+
+> object add python
+    # This function returns an int, and shows that the results
+    # from python object macros are always casted to str.
+    a, b = args
+    return unicode(int(a) + int(b))
+< object
+
+> object substract python
+    a, b = args
+    return unicode(int(a) - int(b))
+< object
+
+> object multiply python
+    a, b = args
+    return unicode(int(a) * int(b))
+< object
+
+> object divise python
+    a, b = args
+    return unicode(int(a) / int(b))
+< object
+
+> object modulo python
+    a, b = args
+    return unicode(int(a) % int(b))
+< object

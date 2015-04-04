@@ -1,0 +1,119 @@
+! version = 2.0
+
+! array library = library librairie xbmc x.b.m.c.
+! array tv = tv tele television lcd ecran
+! array display = display affiche active
+! array switch = switch pass bascul
+
+! array left = left gauche
+! array right = right droite
+! array up = up haut
+! array down = down bas
+! array select = select validate valider
+! array on = dans sur
+
+! array continue = continue reprendre
+
+// Multimedia base function
+
++ (coupe le son|mute) [*]
+- <call>script.media.xbmc.mute</call>{@congratule moi}
+
++ [*] (arret|stop) [*]
+- <call>script.media.xbmc.stop</call>{@congratule moi}
+
++ pause
+- <call>script.media.xbmc.pause</call>{@congratule moi}
+
++ [*] (reprendre|lecture) [*]
+- <call>script.media.xbmc.play</call>{@congratule moi}
+
++ [*] (avance|vas plus loin|@right) [*]
+- <call>script.media.forward</call>{@congratule moi}
+
++ [*] (recule|@left) [*]
+- <call>script.media.backward</call>{@congratule moi}
+
++ [*] change le sous-titre [*]
+- <call>script.media.xbmc.mute</call>{@congratule moi}
+
++ @display les (informations|info) [*]
+@ not implement
+
++ @up
+- <call>script.media.up</call>
+
++ @down
+- <call>script.media.down</call>
+
++ select
+- <call>script.media.xbmc.select</call>
+
+// source multimedia
+
++ (@switch [*] sur|met [*]) la @tv
+- <call>script.media.select_source tv</call>{@congratule moi}
+
++ (@switch [*] sur|met [*]) la #
+- <call>script.media.select_source tv_channel <star2></call>{@congratule moi}
+
++ (@switch [*] sur|met [*]) (le player|xbmc|le raspberry)
+- <call>script.media.select_source xbmc</call>{@congratule moi}
+
++ (@switch [*] sur|met [*]) (la console|ps3|xbox)
+- <call>script.media.select_source ps3</call>{@congratule moi}
+
++ (@switch [*] sur|met [*]) le multi screen
+- <call>script.media.select_source splt</call>{@congratule moi}
+
++ split [*] ecran
+@ switch sur le multi screen
+
++ (@switch [*] sur|met [*]) (la radio|fm)
+- {@congratule moi}
+
+//#############################################################################
+
+// Find on Library
++ @find @on [:] @library * saison # episode #
+- <set page=0><set find=<star1>><set find2=<star2>><set find3=<star3>><set action=script.media.xbmc.launch_media_tvshow><set where=script.media.xbmc.search_media_tvshow>Tu veux que je recherche : <get find> saison <get find2> episode <get find3>, sur x.b.m.c?{topic=search}
+
++ @find @on [:] @library un film avec *
+- <set page=0><set find=<formal>><set find2=cast><set action=script.media.xbmc.launch_media_movie><set where=script.media.xbmc.search_media_movie>
+^ Tu veux que je recherche un film avec : <get find>, sur xbmc?{topic=search}
+
++ @find @on [:] @library un film de #
+- <set page=0><set find=<formal>><set find2=year><set action=script.media.xbmc.launch_media_movie><set where=script.media.xbmc.search_media_movie>
+^ Tu veux que je recherche un film de : <get find>, sur xbmc?{topic=search}
+
++ @find @on [:] @library un film de *
+- <set page=0><set find=<formal>><set find2=genre><set action=media.xbmc.launch_media_movie><set where=media.xbmc.search_media_movie>
+^ Tu veux que je recherche un film de : <get find>, sur xbmc?{topic=search}
+
++ @find @on [:] @library l'album *
+- <set page=0><set find=<formal>><set find2=undefined><set action=script.media.xbmc.launch_media_album><set where=script.media.xbmc.search_media_album>Tu veux que je recherche : <get find>, sur xbmc?{topic=search}
+
++ @find @on [:] @library *
+- <set page=0><set find=<formal>><set find2=undefined><set action=script.media.xbmc.launch_media_movie><set where=script.media.xbmc.search_media_movie>Tu veux que je recherche : <get find>, sur xbmc?{topic=search}
+
+
+// Alias of Find Library
++ @library *
+@ trouve sur library <star>
+
++ @find * @on @library
+@ trouve sur library <star>
+
++ @continue @on @library *
+@ continue <star> sur library
+
++ @library @continue *
+@ continue <star> sur library
+
++ @continue * @on @library
+@ result continue <set find=<formal>><call>script.media.xbmc.launch_media_last_tvshow</call>
+
++ result continue #
+* <star> >= 2 => Je n'est pas trouvé cette série. Désolé.{topic=random}
+* <star> == 0 => Il n'y a pas de nouvel épisode.{topic=random}
+- {@congratule moi}{topic=random}

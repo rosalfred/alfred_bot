@@ -1,0 +1,11 @@
+! array meteo = meteo météo météorologie temps 
+
++ quel [*] est @the @meteo [pour|de|d] [*]
+- TTS: Il fera beau.
+
++ quel [*] es [*] lameteo @meteo [*]
+- TTS: Il fera beau.
+
++ quel [*] @meteo (fait-il|fait il|il fait) [*]
+- Il fait 28°c. La temperature de l'eau est de 10°c. 
+

@@ -1,0 +1,3 @@
+[submodule "lib/rivescript-java"]
+	path = lib/rivescript-java
+	url = https://github.com/aichaos/rivescript-java.git

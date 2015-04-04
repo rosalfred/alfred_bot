@@ -1,0 +1,16 @@
+! version = 2.0
+
+! array news    = new nouvel nouveaut
+
++ quel [*] (sont|est) * @news [*]
+- {topic=news}{@quel sont les news}
+
++ @news [*]
+- ok{topic=news}
+
+> topic news includes general
+    
+    + quel [*] (sont|est) * @news [*]
+    - plein de nouveauté...{topic=random}
+    
+< topic

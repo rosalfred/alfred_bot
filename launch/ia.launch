@@ -1,0 +1,13 @@
+<!-- This is a sample launch file, please change it based on your needs -->
+
+<launch>
+
+	<node pkg="alfred_ia"
+            name="ia_static"
+            type="alfred_ia"
+            args="com.rosalfred.core.ia.IaNode"
+            output="screen">
+        <param name="res_path" value="$(find alfred_ia)/res/"/>
+    </node>
+
+</launch>

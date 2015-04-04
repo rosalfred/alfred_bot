@@ -1,0 +1,19 @@
+! version = 2.0
+
+! array youtube = youtube
+^ you tube|
+
+// Find on Youtube
++ @find sur [:] @youtube *
+- <set page=0><set find=<formal>><set action=script.media.youtube.launch_youtube><set where=script.media.youtube.search_youtube>Tu veux que je recherche : <get find>, sur youtube {topic=search}
+
++ [*] relance la dernière recherche [*] @youtube [*]
+* <get launch> != "" => {topic=search}{@<get launch>}
+- <call>mute</call>
+
+// Alias of Find Youtube
++ @youtube *
+@ trouve sur youtube <star>
+
++ @find * sur @youtube
+@ trouve sur youtube <star>

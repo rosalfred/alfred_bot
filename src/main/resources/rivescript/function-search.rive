@@ -1,0 +1,70 @@
+! version = 2.0
+
+// Search
+
+> topic search includes general
+    
+    // use many parameters :
+    // - find : what would you like find
+    // - where : what search engine/service to use
+    // - page : current search page
+    // - action : what launch engine/service to use
+    // - launch : item to launch
+    
+    // confirm to search on service (ORDER 1)
+    
+    + [*] @no [*]
+    % tu veux que je recherche [*]
+    - Désoler j'ai mal compris!{topic=random}
+    - Mon niveau de compréhention est limité!{topic=random}
+    
+    + [*] @yes [*]
+    % tu veux que je recherche [*]
+    - {@search service}
+    
+    // Help of service (ORDER 99)
+    + [*] @help [*]
+    - je recherche actuellement <get find> sur service.\n
+    ^ je serai capable de répondre aux demandes de:\n
+    ^ - proposer les résultats suivants\n
+    ^ - proposer les résultats précédent\n
+    ^ - visualisé un des résultats proposé\n
+    ^ - ou simplement abandonné votre recherche
+    
+    // Paginate function (ORDER 99)
+    
+    + [*] @next
+    - <add page=1>{@search service}
+    
+    + [*] @prev
+    - <sub page=1>{@search service}
+    
+    // New find (ORDER 99)
+    
+    + @find *
+    - <set page=0><set find=<formal>>{@search service}
+    
+    // Internal function (ORDER 2)
+    
+    + [*] search service
+    @ result service <call><get where></call>
+    
+    + result service #
+    * <star> <= 0 => {random}J'ai rien trouvé|Je n'est pas trouvé ce media{/random}, Désolé.{topic=random}
+    * <star> == 1 => {@ <get launch>}
+    - j'ai trouvé <star> résultats pour <get find>.\n <get finding>Laquelle veux-tu que je lance ?
+    
+    // Launch service action (ORDER 4)
+    
+    + launch * media{weight=10}
+    - {@congratule moi}{topic=random}
+    
+    + launch [*] media
+    - Désoler, je ne trouve pas de correspondance. Cependant {@search service}
+    
+    // Try to Launch media (ORDER 3)
+    
+    + *
+    @ <set launch=<formal>>launch <call><get action></call> media
+    
+< topic

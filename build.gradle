@@ -1,0 +1,199 @@
+buildscript {
+    String rosMavenPath = System.getenv("ROS_MAVEN_PATH")
+    String rosMavenRepository = System.getenv("ROS_MAVEN_REPOSITORY")
+    repositories {
+        if (rosMavenPath != null) {
+            rosMavenPath.tokenize(":").each { path ->
+                maven {
+                    // We can't use uri() here because we aren't running inside something
+                    // that implements the Script interface.
+                    url "file:${path}"
+                }
+            }
+        }
+        maven {
+            url "http://repository.springsource.com/maven/bundles/release"
+        }
+        maven {
+            url "http://repository.springsource.com/maven/bundles/external"
+        }
+        if (rosMavenRepository != null) {
+            maven {
+                url rosMavenRepository
+            }
+        }
+        maven {
+            url "https://github.com/rosjava/rosjava_mvn_repo/raw/master"
+        }
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.ros.rosjava_bootstrap:gradle_plugins:[0.2,0.3)"
+    }
+}
+
+apply plugin: 'application'
+apply plugin: 'ros-java'
+apply plugin: 'eclipse'
+apply plugin: 'catkin'
+apply plugin: 'checkstyle'
+apply plugin: 'findbugs'
+apply plugin: 'pmd'
+apply plugin: 'jdepend'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+defaultTasks 'install', 'installApp'
+
+mainClassName = 'org.ros.RosRun'
+group = 'com.rosalfred.core'
+version = project.catkin.pkg.version
+
+dependencies {
+    compile 'org.ros.rosjava_core:rosjava:[0,)'
+    compile 'org.ros.rosjava_messages:building_msgs:[0,)'
+    compile 'org.ros.rosjava_messages:media_msgs:[0,)'
+    compile 'joda-time:joda-time:2.3'
+    compile 'javax.mail:mail:1.4.5'
+    compile 'org.json:json:20090211'
+    compile 'com.google.guava:guava:19+'
+    compile 'mysql:mysql-connector-java:(5.1,)'
+
+    if (new File('lib/rivescript-java/build.gradle').exists()) {
+        compile project(':lib:rivescript-java')
+    }
+
+    compile 'org.rosbuilding:common_driver:[0,)'
+    compile 'org.rosmultimedia.player:media_model:[0,)'
+
+    //compile project('..:media_driver')
+    //compile project('..:media_model')
+
+    compile fileTree(dir: 'lib', include: '*.jar')
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+            srcDir 'src/main/resources/rivescript/src'
+        }
+        resources {
+            srcDir 'src/main/resources'
+        }
+    }
+}
+
+eclipse.classpath.file {
+    whenMerged { classpath ->
+        def containers = classpath.entries.findAll {
+            entry -> entry.kind == 'src' && (entry.path == 'src/main/resources' || entry.path == 'src/main/resources/rivescript')
+        }
+
+        classpath.entries.removeAll(containers)
+    }
+}
+
+task prepareSubJar(type: JavaCompile) {
+    //copy jar from submodule (submodule not work with bloom)
+    def libJar = new File('lib/rivescript-java/build/libs/rivescript-java.jar')
+
+    if (libJar.exists()) {
+        copy {
+            from "lib/rivescript-java/build/libs/rivescript-java.jar"
+            into "lib"
+        }
+    }
+}
+
+compileJava.doLast {
+    tasks.prepareSubJar.execute()
+
+    /*copy {
+        from "src/main/resources/rivescript"
+        into "res"
+    }*/
+}
+
+startScripts {
+    outputs.upToDateWhen { false }
+
+    doFirst {
+        delete fileTree(dir:'build/scripts')
+        delete fileTree(dir:'build/install')
+    }
+}
+
+installApp {
+    doLast {
+        File link = new File("build/scripts", "$project.name")
+        File target = new File(project.projectDir, "build/install/$project.name/bin/$project.name")
+
+        println "Creating symlink from $link.absolutePath to $target.absolutePath"
+        ant.symlink(link: link.absolutePath, resource: target.absolutePath, overwrite: true)
+    }
+}
+
+checkstyle {
+        ignoreFailures = true
+        configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+        sourceSets = [sourceSets.main]
+}
+tasks.withType(Checkstyle) {
+    exclude '**/tdunning/**'
+}
+
+findbugs {
+//    excludeFilter = rootProject.file('config/findbugs/findbugs-exclude.xml')
+    ignoreFailures = true
+    sourceSets = [sourceSets.main]
+}
+tasks.withType(FindBugs) {
+    findbugs.toolVersion "3.0.0"
+    reports {
+        xml.enabled = true
+        html.enabled = false
+    }
+}
+
+pmd {
+    ignoreFailures = true
+    sourceSets = [sourceSets.main]
+    ruleSets = []
+    ruleSetFiles = rootProject.files("config/pmd/pmd.xml")
+}
+tasks.withType(Pmd) {
+    exclude '**/tdunning/**'
+    reports {
+        xml.enabled = true
+        html.enabled = false
+    }
+}
+
+task compileRivescripts(type: JavaCompile) {
+    sourceSets {
+        rivescript {
+            java {
+                srcDir 'src/main/resources/rivescript/src'
+            }
+            resources {
+                srcDir 'src/main/resources/rivescript'
+            }
+        }
+    }
+
+    source = sourceSets.rivescript.java.srcDirs
+    include '**/*.java'
+    classpath = sourceSets.main.output + sourceSets.main.compileClasspath
+    destinationDir = sourceSets.rivescript.output.classesDir
+}
+
+task rivescriptsJar(type: Jar) {
+    archiveName 'rivescripts.jar'
+    from sourceSets.rivescript.output.classesDir
+    include '**/*.class'
+}
+
+//compileRivescripts.dependsOn compileJava
+//rivescriptsJar.dependsOn compileRivescripts

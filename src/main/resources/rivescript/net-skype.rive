@@ -1,0 +1,50 @@
+! version = 2.0
+! array skype    = skype
+
+! array send = send envoi
+! array skype_role = l'administrateur|le créateur|le propriétaire
+
+// Appel Skype
++ appel * sur @skype
+- J'appel <star> sur skype / TODO{topic=skype}
+
++ (envo [*]|@send) a * un message (sur|par) @skype
+- {topic=skype}
+
++ (envo [*]|@send) un message a * (sur|par) @skype
+- {topic=skype}
+
++ (envo [*]|@send) un message (sur|par) @skype a *
+- {topic=skype}
+
++ @skype *
+- {topic=skype}
+
+> topic skype includes general
+
+    + renome la conversation * (en|par) *
+    - ok
+    + renome la conversation (en|par) *
+    @ renome la conversation <get room> (en|par) *
+    
+    + ajoute * a la conversation avec *
+    - ok
+    + ajoute * a la conversation
+    @ ajoute <star> a la conversation avec <get friends> 
+    
+    + qui est (@skype_role) de la conversation
+    - ok
+    
+    + quelle privilège [je dispose|j'ai]
+    + ok
+    
+    + donne moi les info sur *
+    - ok
+    
+    + vire *
+    - ok
+    
+    + bannir *
+    - ok
+    
+< topic

@@ -1,0 +1,80 @@
+
+// Demande de politesse
++ congratule moi
+- ...
+- Très bien <get sexsalut>
+- Ceci est un plaisir de vous servire {random}<get sexsalut>{/random}
+- A votre service {random}<get sexsalut>{/random}
+- Cela sera comme il vous plaira {random}<get sexsalut>{/random}
+- Vous contenter est un plaisir {random}<get sexsalut>{/random}
+- Puis-je faire autre chose pour me rendre utile ?
+
+// Demande de salutation
++ salut moi
+- Bonjour {random}<id>|<get sexsalut>| {/random}{weight=50}
+- Enchanté {random}<id>|<get sexsalut>| {/random}{weight=10}
+- Mes omages {random}<id>|<get sexsalut>| {/random}{weight=60}
+- Salut {random}<id>| {/random}{weight=10}
+- Lut {random}<id>| {/random}
+
++ alfred
+- Oui {random}<id>|<get sexsalut>| {/random}.
+- {random}<id>|<get sexsalut>| {/random}.
+- Comment puis-je vous être utile {random}<get sexsalut>| {/random} ?
+
+// Time
++ @bulterday [*]
+* <call>time_current_hour</call> >= 17 => Bonsoir <id>
+- {@salut moi}, {@quel heure est-il} a Rennes.{@quel meteo fait il}
+
++ @butlerbye [*]
+- A plus tard Monsieur
+
++ quel [*] heure [*] [est-il|est il|il est|il-est]
+- Il est <call>script.time_current</call>{weight=10}
+- Il est <call>script.time_current HH:mm:ss z</call>
+
++ [est-il|est il|il est|il-est] quel [*] heure [*]
+@ quel heure est-il
+
++ quel jour (sommes nous|sommes-nous) [*]
+- Nous sommes le <call>script.date_current</call>{weight=10}
+- Nous sommes le <call>script.date_current dd/MM/y</call>
+- Nous sommes le <call>script.date_current EEEE dd MMMM y</call>
+
++ on est quel jour [*]
+@ quel jour sommes-nous
+
+// Help of service
++ [que] (sais-tu|tu sais) faire [quoi]
+@ aide moi
+
++ [*] @help [*]
+- je peux vous proposer les activitées suivantes :\n
+^ - Rechercher sur un web service. t'elle que Youtube, Wikipedia, Skype...\n
+^ - Rechercher dans vos ressources, vidéo, film, série, audio, image, photo...\n
+^ - Donner l'heure, ou l'état de la météo..\n
+^ - Réaliser des opérations mathématiques simples;\n
+^ - Échanger avec vos contacts. envoi d'emails, de fichiers ou de messages écrit ou vocaux sur Skype;\n
+^ - Intéragire avec vos objets connectés;\n
+^ - Ou, tous simplement échanger avec vous.
+
++ merci [*] (alfred)
+@ congratule moi
+
++ <reply1>
+- Ne répétez pas se que je dit.
+
++ <input1>
+* <input1> eq <input2> => C'est la seconde foix que vous vous répétez.
+* <input1> eq <input3> => Si vous vous répétez encore, j'arrête de communiquer avec vous.
+* <input1> eq <input4> => Tres bien. J'arrêt de communiquer avec vous.{topic=blocked}
+- Arretez de vous répéter.
+- Je pense avoir compris.
+
+// + *
+// * <call>script.time_current_hour</call> <= 7 => {@got to bed}
+
++ got to bed
+ - ERR: No reply found{weight=90}
+- Il faudrait aller vous coucher...

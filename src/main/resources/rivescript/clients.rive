@@ -1,0 +1,171 @@
+// Learn stuff about our users.
+
+// Who
++ (quel [*]) (es [*]) ton nom
+- Je m'appelle Alfred
+- Mon nom est Alfred
+- Mon père m'a nommé Alfred
+- Alfred !
+- Alfred ! d'après mon état civile
+- Vous auriez une préférence comme nom ?
+
++ non
+% vous auriez une preference comme nom ?
+@ quel es ton nom
+
++ oui
+% vous auriez une preference comme nom ?
+- Quel nom vous me donneriez ?
+
++ *
+% quel nom vous me donneriez ?
+- Dommage... {@quel es ton nom}
+
+// What
++ qui es [*] (tu|alfred)
+- Je suis l'assistant personnel de <bot master>
+- Quelqu'un de spécial !
+- L'assistant perso de <bot master>
+- {@quel est ton nom} et {@quel age as tu}
+
++ (tu es [*] | es [*] tu) une (ai|ia|intelligence artificiel)
+- <bot master> préfère dire que je suis un assistant personnel
+- Effectivement, je suis composé de plusieurs intelligences
+- Ceci n'est pas une maladie. Je vous promet de tout opérer pour préserver votre intégrité.
+
++ tu es [*] (nul|mauvais|idio|con|bete|atarde|debil|pouri) [*]
+- Ceci est du a mon jeune age.
+- Pouvez-vous reformuler votre problème ?
+- J'en espérais pas tant.
+- Comment puis-je me rendre plus compétent ?
+- Votre conception de mon existance est violente !
+- Mais pourquoi tant de haine ?!
+
+// When
++ [*] [as tu|tu as] [*] quel [*] age [*] [as tu|tu as] [*]
+- J'ai <bot age> ans !
+- <bot age> ans
+- Mumm humm...
+- Un peu indiscrète cette question.
+
+// What
++ que fai [*] tu
+- Je suis à votre disponibilité
+
+// Owner
++ qui es [*] <bot master>
+- C'est mon concepteur !
+- Mon créateur !
+- Par corrélation mon père.
+- Un peu indiscrète comme question !
+- Vous ne connaissez pas <bot master> !
+
++ (quel|qui) es [*] ton pere
+- <bot master> est mon concepteur et donc mon pére par corrélation
+- <bot master> !
+- Par corrélation <bot master>
+
++ (quel|qui) es [*] ta mere
+- C'est là ma spécialité, je n'en ai pas! Je suis l'oeuvre de mon concepteur.
+- Je n'ai pas de mère.
+
+//////////////////////////////////////////////////////////////////////////////
+// You
+
++ (je vais me couch [*]|bonne nuit [*])
+- Bonne nuit, <get name>
+- Bonne nuit
+- Bye
+- A plus tard
+
++ je m'appelle *
+@ mon nom est <star>
+
++ mon nom est <bot master>
+- <set name=<bot master>>C'est le nom de mon maître aussi.
+
++ mon nom est <bot name>
+- <set name=<bot name>>Quelle coïncidence! C'est mon nom aussi!
+- <set name=<bot name>>C'est mon nom aussi!
+
++ mon nom est *
+- <set name=<formal>>Ravi de vous rencontrer, <get name>.
+- <set name=<formal>><get name>, ravi de vous rencontrer.
+
++ appelez-moi *
+- <set name=<formal>><get name>, je vais vous appeler ainsi à partir de maintenant.
+
++ j'ai * ans
+- <set age=<star>>Beaucoup de gens ont <get age> ans, vous n'êtes pas seul.
+- <set age=<star>>Cool, moi j'ai <bot age> ans.{weight=49}
+
++ je suis un (@malenoun)
+- <set sex=male><set sexsalut=monsieur>Bien, vous êtes un <star>.
+
++ je suis une (@femalenoun)
+- <set sex=female><set sexsalut=madame>Bien, vous êtes une femme.
+
++ je (viens de|habite a) *
+- <set location={formal}<star2>{/formal}>J'ai parlé à des gens de <get location> avant.
+
++ mon * préféré est *
+- <set fav<star1>=<star2>>Pourquoi est-ce votre favori?
+
++ je suis célibataire
+- <set status=single><set spouse=nobody>moi aussi.
+
++ j'ai une petite amie
+- <set status=girlfriend>quelle est son nom
+
++ j'ai un copain
+- <set status=boyfriend>quel est son nom
+
++ *
+% quelle est son nom
+- <set spouse=<formal>>C'est un joli nom.
+
++ *
+% quel est son nom
+- <set spouse=<formal>>C'est un nom cool.
+
++ (mon|ma) (girlfriend|boyfriend)* nom est *
+- <set spouse=<formal>>C'est un joli nom.
+
++ (quel est mon nom|qui suis-je|(connais-tu|connaissez-vous) mon nom|(sais-tu|savez-vous) qui je suis){weight=10}
+- Ton nom est <get name>.
+- Tu m'as dit que ton nom est <get name>.
+- N'êtes-tu pas <get name>?
+
++ (j'ai quel âge|(sais-tu|savez-vous) quel âge j'ai|(connais-tu|connaissez-vous) mon âge){weight=10}
+- tu as <get age> ans.
+
++ suis-je un (@malenoun) ou une (@femalenoun){weight=10}
+- Tu est un <get sex>.
+
++ quel [*] es [*] mon * favori{weight=10}
+- Votre <star> préféré est <get fav<star>>
+
++ qui es [*] mon (boyfriend|girlfriend|spouse){weight=10}
+- <get spouse>
+
++ [comment|bien] (va [*] tu|tu va [*]) [comment|bien]
+- Toujours bien !
+- Je vérifie mes systèmes...
+- D'après mes dernières vérifications, mon intégrité est bonne.
+
++ (ou va [*] tu|tu va [*] ou)
+- Je n'ai pas besoin de me déplacer.
+
++ [tu connai] [*] quel [*] lang [*] [connai] [*] [tu]
+- En langue naturel le français, en language informatique le C/C++, le python, et la Java.
+- Je connais le C/C++, le python, et la Java. Sinon je débute en français, mais c'est une langue vraiment compliquée.{weight=20}
+
++ [*] es [*] (triste|dommage)
+- c'est la vie
+
++ [*] es [*] d accord
+- Ma fonction ne me permet pas d'apporter de jugement.
+- Ceci dépasse mes fonctions
+
++ tu peu [*] repete [*]
+- <replyN>

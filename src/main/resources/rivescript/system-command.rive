@@ -1,0 +1,10 @@
+! version = 2.0
+
+! array demarre = demar demarre démarre demarrer démarrer
+! array eteins = etein eteins éteins étein etein
+
++ [*] @demarre [*] (@library|@tv) [*]
+- Je démarre xbmc <call>script.media.xbmc.start_library</call>
+
++ [*] @eteins [*] (@library|@tv) [*]
+- J'éteins xbmc <call>script.media.xbmc.shutdown_library</call>

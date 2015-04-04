@@ -1,0 +1,14 @@
+! version = 2.0
+
+! array google = google gogole
+
+// Find on google
++ @find sur [:] @google *
+- <set page=0><set find=<formal>><set action=launch_google><set where=search_google>Tu veux que je recherche : <get find>, sur internet?{topic=search}
+
+// Alias of Find google
++ @google *
+@ trouve sur internet <star>
+
++ @find * sur @google
+@ trouve sur internet <star>

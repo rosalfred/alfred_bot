@@ -1,0 +1,27 @@
+! array learn = apprendre retiens apprend apprends
+
++ {weight=100}@learn *
+- <set learning=<star>>je suis pret a apprendre <star>. Quel est la réponse?{topic=learning}
+
+> topic learning includes general
+   + *
+   - J'apprend. Un instant s'il-vous plait... {@learn}
+   
+   + learn
+   @ <call>learn <get learning>::<sentence></call>
+   
+   + ok
+   - j'appliquerai ceci dorénavant.{topic=random}
+   
+   + ko *
+   - <star> {@tu devrais avoir honte}.{topic=random}
+   
+< topic
+
+> object learn python
+    from xbmc_driver import BotSystem    
+    BotSystem().learn(rs, args)
+    
+    return "ok"
+    
+< object

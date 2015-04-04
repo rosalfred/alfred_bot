@@ -1,0 +1,14 @@
+! version = 2.0
+
+// Search
+
+> topic newuser includes general
+
+	+ *
+	- Enchanté! Mon nom est <bot name>! Quel est on nom ?
+
+	+ _
+	% * quel est on nom
+	- <set name=<formal>>Bonjour, <get name>!{topic=random}
+
+< topic

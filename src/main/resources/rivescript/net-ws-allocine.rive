@@ -1,0 +1,7 @@
+! version = 2.0
+
+! array cine = ciné cinéma
+
+// Find on Allociné
++ quand passe * au @cine
+- <star> passe le 01 janvier 2013 / TODO

@@ -1,0 +1,34 @@
+! version = 2.0
+
+! array mail    = mail gmail imap courriel email
+
++ envoyer a * un message (sur|par) @mail
+- ok{topic=mail}
+
++ envoyer un message a * (sur|par) @mail
+- ok{topic=mail}
+
++ envoyer un message (sur|par) @mail a *
+- ok{topic=mail}
+
++ @mail *
+- ok{topic=mail}
+
+> topic mail includes general
+    
+    // Help of service (ORDER 99)
+    + [*] @help [*]
+    - je consulte actuellement vos mails de la boite <get find>.\n
+    ^ je suis capable de répondre aux demandes de:\n
+    ^ - proposer les résultats suivants\n
+    ^ - proposer les résultats précédent\n
+    ^ - consulter un des résultats proposé\n
+    ^ - ou simplement abandonné votre consultation
+    
+    + renome la conversation * (en|par) *
+    - ok
+    
+< topic
+
++ j ai * (mail[*]|message[*])
+- Je ne serai vous dire.
