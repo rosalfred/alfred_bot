@@ -52,8 +52,8 @@ version = project.catkin.pkg.version
 
 dependencies {
     compile 'org.ros.rosjava_core:rosjava:[0,)'
-    compile 'org.ros.rosjava_messages:building_msgs:[0,)'
-    compile 'org.ros.rosjava_messages:media_msgs:[0,)'
+    compile 'org.ros.rosjava_messages:smarthome_comm_msgs:[0,)'
+    compile 'org.ros.rosjava_messages:smarthome_media_msgs:[0,)'
     compile 'joda-time:joda-time:2.3'
     compile 'javax.mail:mail:1.4.5'
     compile 'org.json:json:20090211'
@@ -64,11 +64,11 @@ dependencies {
         compile project(':lib:rivescript-java')
     }
 
-    compile 'org.rosbuilding:common_driver:[0,)'
-    compile 'org.rosmultimedia.player:media_model:[0,)'
+    compile 'org.rosbuilding:smarthome_common_driver:[0,)'
+    compile 'org.rosmultimedia.player:smarthome_media_model:[0,)'
 
-    //compile project('..:media_driver')
-    //compile project('..:media_model')
+    //compile project('..:smarthome_common_driver')
+    //compile project('..:smarthome_media_model')
 
     compile fileTree(dir: 'lib', include: '*.jar')
 }

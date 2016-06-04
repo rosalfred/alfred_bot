@@ -13,7 +13,7 @@ import org.ros.node.topic.Publisher;
 
 import com.rosalfred.core.ia.rivescript.RiveScript;
 
-import building_msgs.Command;
+import smarthome_comm_msgs.Command;
 
 
 /**

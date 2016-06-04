@@ -2,7 +2,7 @@
 //this is needed because repository contains multipackage and cause problem with release
 rootProject.name = 'alfred_bot'
 
-include '..:rosjava_dynamic_reconfigure', '..:network_zeroconf',
-        '..:media_driver',
-        '..:media_model',
+include '..:rosjava_dynamic_reconfigure', '..:smarthome_network_zeroconf',
+        '..:smarthome_common_driver',
+        '..:smarthome_media_model',
         'lib:rivescript-java'

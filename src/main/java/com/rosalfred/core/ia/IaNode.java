@@ -35,7 +35,7 @@ import com.rosalfred.core.ia.rivescript.RiveScript;
 import com.rosalfred.core.ia.rivescript.lang.Echo;
 import com.rosalfred.core.ia.rivescript.lang.Java;
 
-import building_msgs.Command;
+import smarthome_comm_msgs.Command;
 
 /**
  *

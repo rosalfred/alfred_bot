@@ -9,8 +9,8 @@ set(PACKAGE_PATH "com/rosalfred/core")
 find_package(catkin REQUIRED
   rosjava_build_tools
 
-  common_driver
-  media_model
+  smarthome_common_driver
+  smarthome_media_model
 )
 
 catkin_rosjava_setup(publishMavenJavaPublicationToMavenRepository installApp)

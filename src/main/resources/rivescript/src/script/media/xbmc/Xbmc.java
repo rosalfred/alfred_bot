@@ -33,13 +33,13 @@ import com.rosalfred.core.ia.RsContext;
 import com.rosalfred.core.ia.rivescript.BotReply;
 import com.rosalfred.core.ia.rivescript.RiveScript;
 
-import media_msgs.MediaGetItems;
-import media_msgs.MediaGetItemsRequest;
-import media_msgs.MediaGetItemsResponse;
-import media_msgs.MediaItem;
-import media_msgs.MediaType;
+import smarthome_media_msgs.MediaGetItems;
+import smarthome_media_msgs.MediaGetItemsRequest;
+import smarthome_media_msgs.MediaGetItemsResponse;
+import smarthome_media_msgs.MediaItem;
+import smarthome_media_msgs.MediaType;
 
-import building_msgs.Command;
+import smarthome_comm_msgs.Command;
 
 /**
  *

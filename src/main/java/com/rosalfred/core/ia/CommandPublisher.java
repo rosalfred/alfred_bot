@@ -14,7 +14,7 @@ import org.rosbuilding.common.IModule;
 
 import com.rosalfred.core.ia.rivescript.RiveScript;
 
-import building_msgs.Command;
+import smarthome_comm_msgs.Command;
 
 /**
  *

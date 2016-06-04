@@ -17,7 +17,7 @@ import com.google.common.base.Strings;
 import com.rosalfred.core.ia.CommandPublisher;
 import com.rosalfred.core.ia.rivescript.RiveScript;
 
-import media_msgs.MediaAction;
+import smarthome_media_msgs.MediaAction;
 
 /**
  *

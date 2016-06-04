@@ -17,7 +17,7 @@ import org.rosbuilding.common.media.ISpeaker;
 import com.rosalfred.core.ia.IaNode;
 import com.rosalfred.core.ia.RosRiveScript;
 
-import building_msgs.Command;
+import smarthome_comm_msgs.Command;
 
 /**
  *
