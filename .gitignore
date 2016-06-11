@@ -2,7 +2,6 @@
 /build
 /.gradle
 /local.properties
-/.project
 /.settings
 /.idea
 /.classpath
