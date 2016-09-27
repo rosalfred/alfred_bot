@@ -15,6 +15,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import org.ros2.rcljava.QoSProfile;
 import org.ros2.rcljava.RCLJava;
@@ -44,6 +48,8 @@ import smarthome_comm_msgs.msg.Context;
  */
 public class IaNode implements Consumer<Command> { //extends AbstractNodeMain implements MessageListener<Command>, ReconfigureListener<IaConfig> {
 
+    private static Logger logger = Logger.getLogger(RCLJava.LOG_NAME);
+
     public static final String VAR_CONTEXT_WHERE    = "context-where";
     private static final String SUB_CMD             = "speech";
     private static final String PUB_STATE           = "robotsay";
@@ -52,7 +58,7 @@ public class IaNode implements Consumer<Command> { //extends AbstractNodeMain im
     public static String botname = "Alfred";
 
     protected String prefix = "";
-    protected String path = "/res";
+    protected String path = "rivescript";
 
     protected Node connectedNode;
 //    protected Server<IaConfig> reconfigServer;
@@ -71,7 +77,7 @@ public class IaNode implements Consumer<Command> { //extends AbstractNodeMain im
 //        super.onStart(connectedNode);
         this.connectedNode = connectedNode;
 
-        this.path = this.getPath();
+//        this.path = this.getPath();
 
         this.loadParameters();
 
@@ -97,7 +103,7 @@ public class IaNode implements Consumer<Command> { //extends AbstractNodeMain im
     }
 
     protected RosRiveScript getRiveScript() {
-        return new RosRiveScript(this, false);
+        return new RosRiveScript(this, true);
     }
 
     protected void loadHandlers() {
@@ -244,7 +250,7 @@ public class IaNode implements Consumer<Command> { //extends AbstractNodeMain im
 //        this.prefix = String.format("/%s/", this.connectedNode
 //                .getParameterTree().getString("~tf_prefix", ""));
 
-        if (this.prefix.equals("//")) // Hack
+//        if (this.prefix.equals("//")) // Hack
             this.prefix = "/";
 
         // Path resources
@@ -406,6 +412,11 @@ public class IaNode implements Consumer<Command> { //extends AbstractNodeMain im
     }
 
     public static void main(String[] args) throws InterruptedException {
+        logger.setLevel(Level.ALL);
+        ConsoleHandler handler = new ConsoleHandler();
+        handler.setFormatter(new SimpleFormatter());
+        logger.addHandler(handler);
+        handler.setLevel(Level.ALL);
 
         // Initialize RCL
         RCLJava.rclJavaInit();
