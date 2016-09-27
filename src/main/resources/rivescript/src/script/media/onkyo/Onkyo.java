@@ -8,8 +8,8 @@
  */
 package script.media.onkyo;
 
-import org.ros.node.ConnectedNode;
-import org.ros.node.topic.Publisher;
+import org.ros2.rcljava.node.Node;
+import org.ros2.rcljava.node.topic.Publisher;
 import org.rosbuilding.common.ISystem;
 import org.rosbuilding.common.media.CommandUtil;
 import org.rosbuilding.common.media.ISpeaker;
@@ -17,7 +17,7 @@ import org.rosbuilding.common.media.ISpeaker;
 import com.rosalfred.core.ia.IaNode;
 import com.rosalfred.core.ia.RosRiveScript;
 
-import smarthome_comm_msgs.Command;
+import smarthome_comm_msgs.msg.Command;
 
 /**
  *
@@ -27,7 +27,7 @@ import smarthome_comm_msgs.Command;
 public class Onkyo {
 
     private static Object lockInstance = new Object();
-    private static ConnectedNode node;
+    private static Node node;
     private static Publisher<Command> publisher;
 
     private final RosRiveScript rivescript;
@@ -49,9 +49,9 @@ public class Onkyo {
     }
 
     private void publish(String method) {
-    	node.getLog().info("send sub command : " + method);
+        node.getLog().info("send sub command : " + method);
 
-        Command message = node.getTopicMessageFactory().newFromType(Command._TYPE);
+        Command message = new Command(); // node.getTopicMessageFactory().newFromType(Command._TYPE);
         String user = this.rivescript.getCurrentUser();
         message.getContext().setWho(IaNode.botname);
         message.getContext().setWhere(  // TODO Mapping by knowedge relation
@@ -71,9 +71,9 @@ public class Onkyo {
         this.publish(ISystem.OP_POWER);
 
         Command command = CommandUtil.toCommand(
-        		node,
-        		ISpeaker.OP_CHANNEL,
-        		"SLI10");
+                node,
+                ISpeaker.OP_CHANNEL,
+                "SLI10");
 
         publisher.publish(command);
     }

@@ -17,7 +17,7 @@ import com.google.common.base.Strings;
 import com.rosalfred.core.ia.CommandPublisher;
 import com.rosalfred.core.ia.rivescript.RiveScript;
 
-import smarthome_media_msgs.MediaAction;
+import smarthome_media_msgs.msg.MediaAction;
 
 /**
  *
@@ -35,7 +35,7 @@ public class MediaBot extends CommandPublisher {
         if (Strings.isNullOrEmpty(channel))
             channel = source;
 
-        MediaAction media = this.node.getTopicMessageFactory().newFromType(MediaAction._TYPE);
+        MediaAction media = new MediaAction(); // this.node.getTopicMessageFactory().newFromType(MediaAction._TYPE);
         media.setMethod("channel");
         media.setUri("channel://" + channel);
         media.setType("");

@@ -1,80 +1,33 @@
-buildscript {
-    String rosMavenPath = System.getenv("ROS_MAVEN_PATH")
-    String rosMavenRepository = System.getenv("ROS_MAVEN_REPOSITORY")
-    repositories {
-        if (rosMavenPath != null) {
-            rosMavenPath.tokenize(":").each { path ->
-                maven {
-                    // We can't use uri() here because we aren't running inside something
-                    // that implements the Script interface.
-                    url "file:${path}"
-                }
-            }
-        }
-        maven {
-            url "http://repository.springsource.com/maven/bundles/release"
-        }
-        maven {
-            url "http://repository.springsource.com/maven/bundles/external"
-        }
-        if (rosMavenRepository != null) {
-            maven {
-                url rosMavenRepository
-            }
-        }
-        maven {
-            url "https://github.com/rosjava/rosjava_mvn_repo/raw/master"
-        }
-        mavenCentral()
-    }
-    dependencies {
-        classpath "org.ros.rosjava_bootstrap:gradle_plugins:[0.2,0.3)"
-    }
-}
-
 apply plugin: 'application'
-apply plugin: 'ros-java'
+apply plugin: 'java'
 apply plugin: 'eclipse'
-apply plugin: 'catkin'
-apply plugin: 'checkstyle'
-apply plugin: 'findbugs'
-apply plugin: 'pmd'
-apply plugin: 'jdepend'
+
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-defaultTasks 'install', 'installApp'
+repositories {
+     jcenter()
+}
 
 mainClassName = 'org.ros.RosRun'
 group = 'com.rosalfred.core'
-version = project.catkin.pkg.version
 
-dependencies {
-    compile 'org.ros.rosjava_core:rosjava:[0,)'
-    compile 'org.ros.rosjava_messages:smarthome_comm_msgs:[0,)'
-    compile 'org.ros.rosjava_messages:smarthome_media_msgs:[0,)'
-    compile 'joda-time:joda-time:2.3'
-    compile 'javax.mail:mail:1.4.5'
-    compile 'org.json:json:20090211'
-    compile 'com.google.guava:guava:19+'
-    compile 'mysql:mysql-connector-java:(5.1,)'
-
-    if (new File('lib/rivescript-java/build.gradle').exists()) {
-        compile project(':lib:rivescript-java')
-    }
-
-    compile 'org.rosbuilding:smarthome_common_driver:[0,)'
-    compile 'org.rosmultimedia.player:smarthome_media_model:[0,)'
-
-    //compile project('..:smarthome_common_driver')
-    //compile project('..:smarthome_media_model')
-
-    compile fileTree(dir: 'lib', include: '*.jar')
+ext.sharedManifest = manifest {
+    attributes('Implementation-Title': archivesBaseName,
+            'Implementation-Version': version,
+            'Built-By': System.getProperty('user.name'),
+            'Built-Date': new Date(),
+            'Built-JDK': System.getProperty('java.version')
+    )
 }
 
 sourceSets {
     main {
+        if (project.hasProperty('ament.build_space')) {
+            output.classesDir = file(project.getProperty('ament.build_space') + '/classes/main')
+            output.resourcesDir = file(project.getProperty('ament.build_space') + '/resources/main')
+        }
         java {
             srcDir 'src/main/java'
             srcDir 'src/main/resources/rivescript/src'
@@ -84,6 +37,60 @@ sourceSets {
         }
     }
 }
+
+dependencies {
+    if (project.hasProperty('ament.dependencies')) {
+        project.getProperty('ament.dependencies').split(':').each {
+            compile fileTree(dir: [it, 'java'].join(File.separator), include: '*.jar')
+            testCompile fileTree(dir: [it, 'lib'].join(File.separator), include: '*.jar')
+        }
+    }
+
+    compile 'joda-time:joda-time:2.3'
+    compile 'javax.mail:mail:1.4.5'
+    compile 'org.json:json:20090211'
+    compile 'com.google.guava:guava:19+'
+    compile 'mysql:mysql-connector-java:(5.1,)'
+    compile 'commons-logging:commons-logging:1.2'
+
+    if (new File('lib/rivescript-java/build.gradle').exists()) {
+        compile project(':lib:rivescript-java')
+    }
+
+    compile fileTree(dir: 'lib', include: '*.jar')
+
+    testCompile 'junit:junit:4.12'
+}
+
+jar {
+    if (project.hasProperty('ament.install_space')) {
+        destinationDir = file(
+            [project.getProperty('ament.install_space'), 'share', project.name,
+            'java'].join(File.separator)
+        )
+    }
+    manifest = project.manifest {
+        from sharedManifest
+    }
+}
+
+test {
+    if (project.hasProperty('ament.install_space')) {
+        def current = project.getProperty('ament.install_space') + '/..'
+        def tree = fileTree(dir: current, include: '**/lib/*.so')
+        def tmp = ''
+
+        tree.visit{element ->
+            if (element.isDirectory() && element.name.endsWith('lib')) {
+                tmp += element.file.absolutePath + ":"
+            }
+        }
+
+        systemProperty "java.library.path", tmp + ":" + System.properties['java.library.path']
+    }
+}
+
+
 
 eclipse.classpath.file {
     whenMerged { classpath ->
@@ -135,42 +142,6 @@ installApp {
     }
 }
 
-checkstyle {
-        ignoreFailures = true
-        configFile = rootProject.file('config/checkstyle/checkstyle.xml')
-        sourceSets = [sourceSets.main]
-}
-tasks.withType(Checkstyle) {
-    exclude '**/tdunning/**'
-}
-
-findbugs {
-//    excludeFilter = rootProject.file('config/findbugs/findbugs-exclude.xml')
-    ignoreFailures = true
-    sourceSets = [sourceSets.main]
-}
-tasks.withType(FindBugs) {
-    findbugs.toolVersion "3.0.0"
-    reports {
-        xml.enabled = true
-        html.enabled = false
-    }
-}
-
-pmd {
-    ignoreFailures = true
-    sourceSets = [sourceSets.main]
-    ruleSets = []
-    ruleSetFiles = rootProject.files("config/pmd/pmd.xml")
-}
-tasks.withType(Pmd) {
-    exclude '**/tdunning/**'
-    reports {
-        xml.enabled = true
-        html.enabled = false
-    }
-}
-
 task compileRivescripts(type: JavaCompile) {
     sourceSets {
         rivescript {
@@ -195,5 +166,3 @@ task rivescriptsJar(type: Jar) {
     include '**/*.class'
 }
 
-//compileRivescripts.dependsOn compileJava
-//rivescriptsJar.dependsOn compileRivescripts

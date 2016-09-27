@@ -16,15 +16,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.ros.dynamic_reconfigure.server.Server;
-import org.ros.dynamic_reconfigure.server.Server.ReconfigureListener;
-import org.ros.message.MessageListener;
-import org.ros.namespace.GraphName;
-import org.ros.node.AbstractNodeMain;
-import org.ros.node.ConnectedNode;
-import org.ros.node.Node;
-import org.ros.node.topic.Publisher;
-import org.ros.node.topic.Subscriber;
+import org.ros2.rcljava.QoSProfile;
+import org.ros2.rcljava.RCLJava;
+import org.ros2.rcljava.namespace.GraphName;
+import org.ros2.rcljava.node.Node;
+import org.ros2.rcljava.node.topic.Consumer;
+import org.ros2.rcljava.node.topic.Publisher;
+import org.ros2.rcljava.node.topic.Subscription;
 import org.rosbuilding.common.media.CommandUtil;
 
 import com.google.common.base.Joiner;
@@ -35,7 +33,8 @@ import com.rosalfred.core.ia.rivescript.RiveScript;
 import com.rosalfred.core.ia.rivescript.lang.Echo;
 import com.rosalfred.core.ia.rivescript.lang.Java;
 
-import smarthome_comm_msgs.Command;
+import smarthome_comm_msgs.msg.Command;
+import smarthome_comm_msgs.msg.Context;
 
 /**
  *
@@ -43,7 +42,7 @@ import smarthome_comm_msgs.Command;
  * @author Erwan Lehuitouze <erwan.lehuitouze@gmail.com>
  *
  */
-public class IaNode extends AbstractNodeMain implements MessageListener<Command>, ReconfigureListener<IaConfig> {
+public class IaNode implements Consumer<Command> { //extends AbstractNodeMain implements MessageListener<Command>, ReconfigureListener<IaConfig> {
 
     public static final String VAR_CONTEXT_WHERE    = "context-where";
     private static final String SUB_CMD             = "speech";
@@ -52,24 +51,24 @@ public class IaNode extends AbstractNodeMain implements MessageListener<Command>
 
     public static String botname = "Alfred";
 
-    protected String prefix;
-    protected String path;
+    protected String prefix = "";
+    protected String path = "/res";
 
-    protected ConnectedNode connectedNode;
-    protected Server<IaConfig> reconfigServer;
+    protected Node connectedNode;
+//    protected Server<IaConfig> reconfigServer;
     protected Publisher<Command> publisherSay;
-    protected Subscriber<Command> subscriberListen;
+    protected Subscription<Command> subscriberListen;
 
     protected RosRiveScript bot;
 
-    @Override
-    public GraphName getDefaultNodeName() {
-        return GraphName.of("local_ia");
-    }
+//    @Override
+//    public GraphName getDefaultNodeName() {
+//        return GraphName.of("local_ia");
+//    }
 
-    @Override
-    public void onStart(ConnectedNode connectedNode) {
-        super.onStart(connectedNode);
+//    @Override
+    public void onStart(Node connectedNode) {
+//        super.onStart(connectedNode);
         this.connectedNode = connectedNode;
 
         this.path = this.getPath();
@@ -198,17 +197,22 @@ public class IaNode extends AbstractNodeMain implements MessageListener<Command>
         this.logI("Start Topics (publishers/subscribers)...");
 
         // Create publishers
-        this.publisherSay = this.connectedNode.newPublisher(
-                this.prefix + PUB_STATE, Command._TYPE);
+        this.publisherSay = this.connectedNode.createPublisher(
+                Command.class,
+                this.prefix + PUB_STATE);
 
         // Create subscribers
-        this.subscriberListen = this.connectedNode.newSubscriber(
-                this.prefix + SUB_CMD, Command._TYPE);
-        this.subscriberListen.addMessageListener(this);
+        this.subscriberListen = this.connectedNode.createSubscription(
+                Command.class,
+                this.prefix + SUB_CMD,
+                this
+                        );
+//        this.subscriberListen.addMessageListener(this);
     }
 
     private Command makeSay() {
-        Command command = this.connectedNode.getTopicMessageFactory().newFromType(Command._TYPE);
+        Command command = new Command(); // this.connectedNode.getTopicMessageFactory().newFromType(Command._TYPE);
+        command.setContext(new Context());
         command.getContext().setWho(IaNode.botname);
         command.setAction(CommandUtil.Action.SAY.getValue());
         return command;
@@ -237,29 +241,29 @@ public class IaNode extends AbstractNodeMain implements MessageListener<Command>
      */
     private void loadParameters() {
         // Prefix
-        this.prefix = String.format("/%s/", this.connectedNode
-                .getParameterTree().getString("~tf_prefix", ""));
+//        this.prefix = String.format("/%s/", this.connectedNode
+//                .getParameterTree().getString("~tf_prefix", ""));
 
         if (this.prefix.equals("//")) // Hack
             this.prefix = "/";
 
         // Path resources
-        this.path = this.connectedNode.getParameterTree()
-                .getString("~" + IaConfig.RES_PATH, this.path);
-        this.connectedNode.getParameterTree().set("~" + IaConfig.RES_PATH, this.path);
+//        this.path = this.connectedNode.getParameterTree()
+//                .getString("~" + IaConfig.RES_PATH, this.path);
+//        this.connectedNode.getParameterTree().set("~" + IaConfig.RES_PATH, this.path);
 
         this.logI(String.format("prefix : %s", this.prefix));
 
         // Connect to dynamic reconfigure
-        this.reconfigServer = new Server<IaConfig>(
-                this.connectedNode, new IaConfig(this.connectedNode), this);
+//        this.reconfigServer = new Server<IaConfig>(
+//                this.connectedNode, new IaConfig(this.connectedNode), this);
     }
 
     /**
      * On new message is throw.
      */
     @Override
-    public void onNewMessage(Command command) {
+    public void accept(Command command) {
         String user = command.getContext().getWho();
         String where = command.getContext().getWhere();
 
@@ -309,7 +313,7 @@ public class IaNode extends AbstractNodeMain implements MessageListener<Command>
                             String content = String.format("[%s]",
                                     Joiner.on(",").join(responce.getIntents()));
 
-                            command = this.publisherSay.newMessage();
+                            command = new Command(); // this.publisherSay.newMessage();
                             command.getContext().setWhere(where);
                             command.getContext().setWho(IaNode.botname);
                             command.setAction("show");
@@ -341,29 +345,29 @@ public class IaNode extends AbstractNodeMain implements MessageListener<Command>
     /**
      * On node shutdown is throw.
      */
-    @Override
+//    @Override
     public void onShutdown(Node node) {
         this.persistBotState();
         this.sayGoodbye();
 
-        this.reconfigServer.close();
-        super.onShutdown(node);
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException e) {
-        }
+//        this.reconfigServer.close();
+//        super.onShutdown(node);
+//        try {
+//            Thread.sleep(1);
+//        } catch (InterruptedException e) {
+//        }
     }
 
-    @Override
-    public IaConfig onReconfigure(IaConfig config, int level) {
-        this.path = config.getString(IaConfig.RES_PATH, this.path);
-
-        // TODO DELETE : For test
-        config.setString(IaConfig.RES_PATH, this.path);
-
-        this.reloadBot();
-        return config;
-    }
+//    @Override
+//    public IaConfig onReconfigure(IaConfig config, int level) {
+//        this.path = config.getString(IaConfig.RES_PATH, this.path);
+//
+//        // TODO DELETE : For test
+//        config.setString(IaConfig.RES_PATH, this.path);
+//
+//        this.reloadBot();
+//        return config;
+//    }
 
     /**
      * Log a message with debug log level.
@@ -401,4 +405,20 @@ public class IaNode extends AbstractNodeMain implements MessageListener<Command>
         this.connectedNode.getLog().error(message.getStackTrace());
     }
 
+    public static void main(String[] args) throws InterruptedException {
+
+        // Initialize RCL
+        RCLJava.rclJavaInit();
+
+        // Let's create a Node
+        Node node = RCLJava.createNode("local_ia");
+
+        IaNode ia = new IaNode();
+        ia.onStart(node);
+
+        RCLJava.spin(node);
+
+        ia.onShutdown(node);
+        RCLJava.shutdown();
+    }
 }

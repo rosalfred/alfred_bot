@@ -8,13 +8,13 @@
  */
 package com.rosalfred.core.ia;
 
-import org.ros.node.ConnectedNode;
-import org.ros.node.topic.Publisher;
+import org.ros2.rcljava.node.Node;
+import org.ros2.rcljava.node.topic.Publisher;
 import org.rosbuilding.common.IModule;
 
 import com.rosalfred.core.ia.rivescript.RiveScript;
 
-import smarthome_comm_msgs.Command;
+import smarthome_comm_msgs.msg.Command;
 
 /**
  *
@@ -25,7 +25,7 @@ public abstract class CommandPublisher {
 
     protected final Object lockInstance = new Object();
 
-    protected ConnectedNode node;
+    protected Node node;
     protected volatile RosRiveScript rivescript;
     protected Publisher<Command> publisher;
 
@@ -67,8 +67,7 @@ public abstract class CommandPublisher {
     protected void publish(String method, String uri) {
         this.node.getLog().info("send sub command : " + method);
 
-        Command message =
-                this.node.getTopicMessageFactory().newFromType(Command._TYPE);
+        Command message = new Command();
         message.setAction(IModule.SEP + method);
         message.setSubject(uri);
 

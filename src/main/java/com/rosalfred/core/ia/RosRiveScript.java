@@ -8,12 +8,12 @@
  */
 package com.rosalfred.core.ia;
 
-import org.ros.node.ConnectedNode;
-import org.ros.node.topic.Publisher;
+import org.ros2.rcljava.node.Node;
+import org.ros2.rcljava.node.topic.Publisher;
 
 import com.rosalfred.core.ia.rivescript.RiveScript;
 
-import smarthome_comm_msgs.Command;
+import smarthome_comm_msgs.msg.Command;
 
 
 /**
@@ -33,7 +33,7 @@ public class RosRiveScript extends RiveScript {
         this.rsutils = new RsContext(this);
     }
 
-    public ConnectedNode getNode() {
+    public Node getNode() {
         return this.iaNode.connectedNode;
     }
 
