@@ -52,11 +52,9 @@ dependencies {
     compile 'com.google.guava:guava:19+'
     compile 'mysql:mysql-connector-java:(5.1,)'
     compile 'commons-logging:commons-logging:1.2'
-
     if (new File('lib/rivescript-java/build.gradle').exists()) {
         compile project(':lib:rivescript-java')
     }
-
     compile fileTree(dir: 'lib', include: '*.jar')
 
     testCompile 'junit:junit:4.12'
@@ -132,15 +130,18 @@ startScripts {
     }
 }
 
-installApp {
-    doLast {
-        File link = new File("build/scripts", "$project.name")
-        File target = new File(project.projectDir, "build/install/$project.name/bin/$project.name")
-
-        println "Creating symlink from $link.absolutePath to $target.absolutePath"
-        ant.symlink(link: link.absolutePath, resource: target.absolutePath, overwrite: true)
-    }
+task copyTask(type: Copy) {
+    from 'src/main/resources'
+    into([project.getProperty('ament.install_space'), 'share', project.name,
+            'java', 'res'].join(File.separator))
+    from configurations.testRuntime
+    into([project.getProperty('ament.install_space'), 'lib', 'java'].join(File.separator))
+    from configurations.runtime
+    into([project.getProperty('ament.install_space'), 'lib', 'java'].join(File.separator))
+    from "lib"
+    into([project.getProperty('ament.install_space'), 'lib', 'java'].join(File.separator))
 }
+assemble.dependsOn copyTask
 
 task compileRivescripts(type: JavaCompile) {
     sourceSets {

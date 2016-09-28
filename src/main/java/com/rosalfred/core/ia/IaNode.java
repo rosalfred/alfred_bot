@@ -32,6 +32,7 @@ import org.rosbuilding.common.media.CommandUtil;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.rivescript.ClientManager;
+
 import com.rosalfred.core.ia.rivescript.BotReply;
 import com.rosalfred.core.ia.rivescript.RiveScript;
 import com.rosalfred.core.ia.rivescript.lang.Echo;
@@ -51,8 +52,8 @@ public class IaNode implements Consumer<Command> { //extends AbstractNodeMain im
     private static Logger logger = Logger.getLogger(RCLJava.LOG_NAME);
 
     public static final String VAR_CONTEXT_WHERE    = "context-where";
-    private static final String SUB_CMD             = "speech";
-    private static final String PUB_STATE           = "robotsay";
+    public static final String SUB_CMD              = "speech";
+    public static final String PUB_STATE            = "robotsay";
     private static final String PERSITE_FILE        = "saveContext.xml";
 
     public static String botname = "Alfred";
@@ -77,7 +78,7 @@ public class IaNode implements Consumer<Command> { //extends AbstractNodeMain im
 //        super.onStart(connectedNode);
         this.connectedNode = connectedNode;
 
-//        this.path = this.getPath();
+        this.path = this.getPath();
 
         this.loadParameters();
 
@@ -89,7 +90,7 @@ public class IaNode implements Consumer<Command> { //extends AbstractNodeMain im
 
     protected String getPath() {
         return IaNode.class.getProtectionDomain().getCodeSource()
-                .getLocation().getPath().replace("bin/", "") + "/res";
+                .getLocation().getPath().replace("alfred_bot.jar", "") + "/res";
     }
 
     private void initBot() {
@@ -103,7 +104,7 @@ public class IaNode implements Consumer<Command> { //extends AbstractNodeMain im
     }
 
     protected RosRiveScript getRiveScript() {
-        return new RosRiveScript(this, true);
+        return new RosRiveScript(this, false);
     }
 
     protected void loadHandlers() {
@@ -426,6 +427,8 @@ public class IaNode implements Consumer<Command> { //extends AbstractNodeMain im
 
         IaNode ia = new IaNode();
         ia.onStart(node);
+
+        Thread.sleep(5000);
 
         RCLJava.spin(node);
 
