@@ -20,9 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import org.ros2.rcljava.QoSProfile;
 import org.ros2.rcljava.RCLJava;
-import org.ros2.rcljava.namespace.GraphName;
 import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.node.topic.Consumer;
 import org.ros2.rcljava.node.topic.Publisher;
