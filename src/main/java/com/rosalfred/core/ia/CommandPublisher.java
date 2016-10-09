@@ -15,6 +15,7 @@ import org.rosbuilding.common.IModule;
 import com.rosalfred.core.ia.rivescript.RiveScript;
 
 import smarthome_comm_msgs.msg.Command;
+import smarthome_comm_msgs.msg.Context;
 
 /**
  *
@@ -79,6 +80,7 @@ public abstract class CommandPublisher {
      * @param msg
      */
     protected void publish(Command msg) {
+        msg.setContext(new Context());
         msg.getContext().setWho(IaNode.botname);
         msg.getContext().setWhere(  // TODO Mapping by knowedge relation
                 this.getUserParam(IaNode.VAR_CONTEXT_WHERE));

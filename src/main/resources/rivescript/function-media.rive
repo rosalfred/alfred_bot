@@ -64,7 +64,7 @@
 - <call>script.media.select_source ps3</call>{@congratule moi}
 
 + (@switch [*] sur|met [*]) le multi screen
-- <call>script.media.select_source splt</call>{@congratule moi}
+- <call>script.media.select_source split</call>{@congratule moi}
 
 + split [*] ecran
 @ switch sur le multi screen
