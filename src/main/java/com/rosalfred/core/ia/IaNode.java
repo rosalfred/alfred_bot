@@ -166,7 +166,7 @@ public class IaNode implements Consumer<Command> { //extends AbstractNodeMain im
      * @return Folder persist path.
      */
     protected String getFolderPersist() {
-        String path = System.getProperty("user.home") + "/.ros";
+        String path = System.getProperty("user.home") + "/.ros2";
         if (System.getenv().containsKey("ROS_HOME")) {
             path = System.getenv("ROS_HOME");
         }
@@ -213,8 +213,7 @@ public class IaNode implements Consumer<Command> { //extends AbstractNodeMain im
                 Command.class,
                 this.prefix + SUB_CMD,
                 this
-                        );
-//        this.subscriberListen.addMessageListener(this);
+        );
     }
 
     private Command makeSay() {

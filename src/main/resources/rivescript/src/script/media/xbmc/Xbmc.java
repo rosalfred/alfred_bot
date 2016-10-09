@@ -12,13 +12,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-//import org.ros.exception.RemoteException;
-//import org.ros.exception.ServiceNotFoundException;
-//import org.ros.node.service.ServiceClient;
-//import org.ros.node.service.ServiceResponseListener;
+import org.ros2.rcljava.QoSProfile;
+import org.ros2.rcljava.node.service.Client;
 import org.rosbuilding.common.ISystem;
 import org.rosbuilding.common.media.CommandUtil;
 import org.rosbuilding.common.media.IPlayer;
@@ -34,8 +34,8 @@ import com.rosalfred.core.ia.rivescript.BotReply;
 import com.rosalfred.core.ia.rivescript.RiveScript;
 
 import smarthome_media_msgs.srv.MediaGetItems;
-import smarthome_media_msgs.srv.MediaGetItems.Request;
-import smarthome_media_msgs.srv.MediaGetItems.Response;
+import smarthome_media_msgs.srv.MediaGetItems_Request;
+import smarthome_media_msgs.srv.MediaGetItems_Response;
 import smarthome_media_msgs.msg.MediaItem;
 import smarthome_media_msgs.msg.MediaType;
 
@@ -49,8 +49,7 @@ import smarthome_comm_msgs.msg.Command;
 public class Xbmc extends CommandPublisher {
 
     private final static String nodePath = "/home/salon/xbmc/";
-//    private static ServiceClient<MediaGetItems.Request, MediaGetItems.Response> service;
-    private Object service;
+    private static Client<MediaGetItems> service;
 
     public Xbmc(RiveScript rivescript) {
         super(rivescript);
@@ -61,11 +60,11 @@ public class Xbmc extends CommandPublisher {
         super.initialize();
 
         if (this.node != null) {
-//            try {
-//                service = this.node.newServiceClient(nodePath + "get_items", MediaGetItems._TYPE);
-//            } catch (ServiceNotFoundException e) {
-//                this.node.getLog().error("Service Xbmc get_items not found !");
-//            }
+            try {
+                service = this.node.createClient(MediaGetItems.class, nodePath + "get_items", QoSProfile.PROFILE_SERVICES_DEFAULT);
+            } catch (Exception e) {
+                this.node.getLog().error("Service Xbmc get_items not found !");
+            }
         }
     }
 
@@ -143,33 +142,33 @@ public class Xbmc extends CommandPublisher {
 
         List<MediaItem> items = null;
 
-//        if (service != null) {
-//            Movie media = new Movie();
-//            MediaGetItemsRequest request = service.newMessage();
-//            request.getItem().getMediatype().setValue(MediaType.VIDEO_MOVIE);
-//
-//            switch (type) {
-//            case "cast":
-//                media.setCast(new ArrayList<String>());
-//                media.getCast().add(search);
-//                break;
-//            case "year":
-//                media.setYear(Integer.parseInt(search));
-//                break;
-//            case "genre":
-//                media.setGenre(new ArrayList<String>());
-//                media.getGenre().add(search);
-//                break;
-//            default:
-//                media.setTitle(search);
-//                break;
-//            }
-//
-//            request.getItem().setData(media.toJson());
-//            items = this.getMediaItems(request);
-//        } else {
-//            items = new ArrayList<MediaItem>();
-//        }
+        if (service != null) {
+            Movie media = new Movie();
+            MediaGetItems_Request request = new MediaGetItems_Request();
+            request.getItem().getMediatype().setValue(MediaType.VIDEO_MOVIE);
+
+            switch (type) {
+            case "cast":
+                media.setCast(new ArrayList<String>());
+                media.getCast().add(search);
+                break;
+            case "year":
+                media.setYear(Integer.parseInt(search));
+                break;
+            case "genre":
+                media.setGenre(new ArrayList<String>());
+                media.getGenre().add(search);
+                break;
+            default:
+                media.setTitle(search);
+                break;
+            }
+
+            request.getItem().setData(media.toJson());
+            items = this.getMediaItems(request);
+        } else {
+            items = new ArrayList<MediaItem>();
+        }
 
         this.setUserParam(RsContext.COUNT, String.valueOf(items.size()));
 
@@ -211,7 +210,7 @@ public class Xbmc extends CommandPublisher {
         String season = this.getUserParam(RsContext.FIND2);
         String episode = this.getUserParam(RsContext.FIND3);
 
-        MediaGetItems.Request request = new MediaGetItems.Request(); // service.newMessage();
+        MediaGetItems_Request request = new MediaGetItems_Request(); // service.newMessage();
         MediaItem reqItem = request.getItem();
         reqItem.getMediatype().setValue(MediaType.VIDEO_TVSHOW_EPISODE);
 
@@ -252,7 +251,7 @@ public class Xbmc extends CommandPublisher {
             type = "";
         }
 
-        MediaGetItems.Request request = new MediaGetItems.Request(); // service.newMessage();
+        MediaGetItems_Request request = new MediaGetItems_Request(); // service.newMessage();
         request.getItem().getMediatype().setValue(MediaType.AUDIO_ALBUM);
         Song media = new Song();
 
@@ -297,7 +296,7 @@ public class Xbmc extends CommandPublisher {
         String title = null;
 
         if (service != null) {
-            MediaGetItems.Request request = new MediaGetItems.Request(); // service.newMessage();
+            MediaGetItems_Request request = new MediaGetItems_Request(); // service.newMessage();
             request.getItem().getMediatype().setValue(MediaType.VIDEO_MOVIE);
             Movie media = new Movie();
 
@@ -346,7 +345,7 @@ public class Xbmc extends CommandPublisher {
         // String resume = this.getUserParam(RsContext.RESUME);
         launch = RsContext.normalize(launch).toLowerCase();
 
-        MediaGetItems.Request request = new MediaGetItems.Request(); // service.newMessage();
+        MediaGetItems_Request request = new MediaGetItems_Request(); // service.newMessage();
         request.getItem().getMediatype().setValue(MediaType.VIDEO_TVSHOW_EPISODE);
 
         Tvshow media = new Tvshow();
@@ -380,7 +379,7 @@ public class Xbmc extends CommandPublisher {
         // this.rivescript.getUtils().getUserParam(RsContext.RESUME);
         show = RsContext.normalize(show).toLowerCase();
 
-        MediaGetItems.Request request = new MediaGetItems.Request(); //service.newMessage();
+        MediaGetItems_Request request = new MediaGetItems_Request(); //service.newMessage();
         request.getItem().getMediatype().setValue(MediaType.VIDEO_TVSHOW_EPISODE);
 
         Tvshow media = new Tvshow();
@@ -427,7 +426,7 @@ public class Xbmc extends CommandPublisher {
         String launch = this.getUserParam(RsContext.LAUNCH);
         launch = RsContext.normalize(launch).toLowerCase();
 
-        MediaGetItems.Request request = new MediaGetItems.Request(); // service.newMessage();
+        MediaGetItems_Request request = new MediaGetItems_Request(); // service.newMessage();
         request.getItem().getMediatype().setValue(MediaType.AUDIO_ALBUM);
         Song media = new Song();
         media.setAlbum(find);
@@ -451,7 +450,7 @@ public class Xbmc extends CommandPublisher {
         return new BotReply(title);
     }
 
-    private List<MediaItem> getMediaItems(MediaGetItems.Request request) {
+    private List<MediaItem> getMediaItems(MediaGetItems_Request request) {
         final List<MediaItem> result = new ArrayList<MediaItem>();
 
         final Semaphore semaphore = new Semaphore(1);
@@ -462,19 +461,21 @@ public class Xbmc extends CommandPublisher {
             e.printStackTrace();
         }
 
-//        service.call(request, new ServiceResponseListener<MediaGetItems.Response>() {
-//
-//            @Override
-//            public void onSuccess(MediaGetItemsResponse response) {
-//                result.addAll(response.getItems());
-//                semaphore.release();
-//            }
-//
-//            @Override
-//            public void onFailure(RemoteException arg0) {
-//                semaphore.release();
-//            }
-//        });
+        Future<MediaGetItems_Response> future = service.sendRequest(request);
+        if (future != null) {
+            try {
+                result.addAll(future.get().getItems());
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("add_two_ints_client was interrupted. Exiting.");
+        }
+        semaphore.release();
 
         try {
             semaphore.tryAcquire(5000, TimeUnit.MILLISECONDS);
