@@ -50,6 +50,7 @@ dependencies {
     compile 'javax.mail:mail:1.4.5'
     compile 'org.json:json:20090211'
     compile 'com.google.guava:guava:19+'
+    compile 'com.google.code.gson:gson:2.7'
     compile 'mysql:mysql-connector-java:(5.1,)'
     compile 'commons-logging:commons-logging:1.2'
     if (new File('lib/rivescript-java/build.gradle').exists()) {

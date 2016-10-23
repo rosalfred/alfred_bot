@@ -61,7 +61,10 @@ public class Xbmc extends CommandPublisher {
 
         if (this.node != null) {
             try {
-                service = this.node.createClient(MediaGetItems.class, nodePath + "get_items", QoSProfile.PROFILE_SERVICES_DEFAULT);
+                service = this.node.<MediaGetItems>createClient(
+                        MediaGetItems.class,
+                        nodePath + "get_items",
+                        QoSProfile.PROFILE_SERVICES_DEFAULT);
             } catch (Exception e) {
                 this.node.getLog().error("Service Xbmc get_items not found !");
             }
@@ -464,7 +467,8 @@ public class Xbmc extends CommandPublisher {
         Future<MediaGetItems_Response> future = service.sendRequest(request);
         if (future != null) {
             try {
-                result.addAll(future.get().getItems());
+                List<MediaItem> items = future.get().getItems();
+                result.addAll(items);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
