@@ -2,7 +2,7 @@ package com.rosalfred.core.ia.manual;
 
 import java.util.Scanner;
 
-import org.ros2.rcljava.QoSProfile;
+import org.ros2.rcljava.qos.QoSProfile;
 import org.ros2.rcljava.RCLJava;
 import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.node.topic.Publisher;
@@ -37,7 +37,7 @@ public class Talker {
                 node.<Command>createPublisher(
                         Command.class,
                         "/" + IaNode.SUB_CMD,
-                        QoSProfile.PROFILE_DEFAULT);
+                        QoSProfile.DEFAULT);
 
         String value;
         while(RCLJava.ok()) {

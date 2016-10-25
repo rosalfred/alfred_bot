@@ -17,7 +17,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-import org.ros2.rcljava.QoSProfile;
+import org.ros2.rcljava.qos.QoSProfile;
 import org.ros2.rcljava.node.service.Client;
 import org.rosbuilding.common.ISystem;
 import org.rosbuilding.common.media.CommandUtil;
@@ -64,7 +64,7 @@ public class Xbmc extends CommandPublisher {
                 service = this.node.<MediaGetItems>createClient(
                         MediaGetItems.class,
                         nodePath + "get_items",
-                        QoSProfile.PROFILE_SERVICES_DEFAULT);
+                        QoSProfile.SERVICES_DEFAULT);
             } catch (Exception e) {
                 this.node.getLog().error("Service Xbmc get_items not found !");
             }

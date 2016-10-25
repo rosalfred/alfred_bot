@@ -2,7 +2,7 @@ package com.rosalfred.core.ia.manual;
 
 import java.util.Scanner;
 
-import org.ros2.rcljava.QoSProfile;
+import org.ros2.rcljava.qos.QoSProfile;
 import org.ros2.rcljava.RCLJava;
 import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.node.topic.Consumer;
@@ -41,7 +41,7 @@ public class Chatter {
         Publisher<Command> chatter_pub = node.<Command>createPublisher(
                         Command.class,
                         "/" + IaNode.SUB_CMD,
-                        QoSProfile.PROFILE_DEFAULT);
+                        QoSProfile.DEFAULT);
 
         Subscription<Command> sub = node.<Command>createSubscription(
                         Command.class,
@@ -52,7 +52,7 @@ public class Chatter {
                                 Listener.chatterCallback(msg);
                             }
                         },
-                        QoSProfile.PROFILE_DEFAULT);
+                        QoSProfile.DEFAULT);
 
         String value;
 

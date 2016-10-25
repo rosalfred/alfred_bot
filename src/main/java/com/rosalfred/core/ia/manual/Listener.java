@@ -1,6 +1,6 @@
 package com.rosalfred.core.ia.manual;
 
-import org.ros2.rcljava.QoSProfile;
+import org.ros2.rcljava.qos.QoSProfile;
 import org.ros2.rcljava.RCLJava;
 import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.node.topic.Consumer;
@@ -33,7 +33,7 @@ public class Listener {
                         Listener.chatterCallback(msg);
                     }
                 },
-                QoSProfile.PROFILE_DEFAULT);
+                QoSProfile.DEFAULT);
 
         RCLJava.spin(node);
 
