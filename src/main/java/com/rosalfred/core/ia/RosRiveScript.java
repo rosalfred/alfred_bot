@@ -34,7 +34,7 @@ public class RosRiveScript extends RiveScript {
     }
 
     public Node getNode() {
-        return this.iaNode.connectedNode;
+        return this.iaNode.getConnectedNode();
     }
 
     /**

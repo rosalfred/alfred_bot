@@ -8,23 +8,32 @@
  */
 package com.rosalfred.core.ia;
 
+import java.util.Arrays;
+
 import org.ros2.rcljava.node.Node;
+import org.ros2.rcljava.node.parameter.ParameterVariant;
+import org.rosbuilding.common.NodeDriverConfig;
 
 /**
  *
  * @author Mickael Gaillard <mick.gaillard@gmail.com>
  *
  */
-public class IaConfig { //extends BaseConfig {
+public class IaConfig extends NodeDriverConfig {
 
-    //public static final String RATE = "rate";
-    public static final String RES_PATH = "res_path";
+    public static final String PARAM_RES_PATH = "res_path";
 
     public IaConfig(Node node) {
-//        super(node);
+        super(
+                node,
+                "/",
+                "fixed_frame",
+                1,
+                "00:00:00:00:00:00");
 
-        // TODO to custom
-        //this.addField(RATE, "int", 0, "rate processus", "1", 0, 200);
-//        this.addField(RES_PATH, "str", 0, "Path to brain", "/res", 0, 0);
+        this.connectedNode.setParameters(
+                Arrays.<ParameterVariant<?>>asList(
+                        new ParameterVariant<String>(PARAM_RES_PATH,     "/res")
+                ));
     }
 }

@@ -15,21 +15,20 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
+
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
+import com.rivescript.ClientManager;
+
 
 import org.ros2.rcljava.RCLJava;
 import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.node.topic.Consumer;
 import org.ros2.rcljava.node.topic.Publisher;
 import org.ros2.rcljava.node.topic.Subscription;
-import org.rosbuilding.common.media.CommandUtil;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
-import com.rivescript.ClientManager;
+import org.rosbuilding.common.BaseSimpleNode;
+import org.rosbuilding.common.media.CommandUtil;
 
 import com.rosalfred.core.ia.rivescript.BotReply;
 import com.rosalfred.core.ia.rivescript.RiveScript;
@@ -37,17 +36,13 @@ import com.rosalfred.core.ia.rivescript.lang.Echo;
 import com.rosalfred.core.ia.rivescript.lang.Java;
 
 import smarthome_comm_msgs.msg.Command;
-import smarthome_comm_msgs.msg.Context;
-
 /**
  *
  * @author Mickael Gaillard <mick.gaillard@gmail.com>
  * @author Erwan Lehuitouze <erwan.lehuitouze@gmail.com>
  *
  */
-public class IaNode implements Consumer<Command> { //extends AbstractNodeMain implements MessageListener<Command>, ReconfigureListener<IaConfig> {
-
-    private static Logger logger = Logger.getLogger(RCLJava.LOG_NAME);
+public class IaNode extends BaseSimpleNode<IaConfig> implements Consumer<Command> {
 
     public static final String VAR_CONTEXT_WHERE    = "context-where";
     public static final String SUB_CMD              = "speech";
@@ -56,11 +51,8 @@ public class IaNode implements Consumer<Command> { //extends AbstractNodeMain im
 
     public static String botname = "Alfred";
 
-    protected String prefix = "";
     protected String path = "rivescript";
 
-    protected Node connectedNode;
-//    protected Server<IaConfig> reconfigServer;
     protected Publisher<Command> publisherSay;
     protected Subscription<Command> subscriberListen;
 
@@ -71,19 +63,30 @@ public class IaNode implements Consumer<Command> { //extends AbstractNodeMain im
 //        return GraphName.of("local_ia");
 //    }
 
-//    @Override
+    @Override
     public void onStart(Node connectedNode) {
-//        super.onStart(connectedNode);
-        this.connectedNode = connectedNode;
+        super.onStart(connectedNode);
 
         this.path = this.getPath();
-
-        this.loadParameters();
 
         this.initTopics();
         this.initBot();
 
         this.sayWelcome();
+    }
+
+    @Override
+    protected IaConfig getConfig() {
+        return new IaConfig(this.connectedNode);
+    }
+
+    /**
+     * On node shutdown is throw.
+     */
+    @Override
+    public void onShutdown(Node node) {
+        this.persistBotState();
+        this.sayGoodbye();
     }
 
     protected String getPath() {
@@ -204,19 +207,18 @@ public class IaNode implements Consumer<Command> { //extends AbstractNodeMain im
         // Create publishers
         this.publisherSay = this.connectedNode.createPublisher(
                 Command.class,
-                this.prefix + PUB_STATE);
+                this.configuration.getPrefix() + PUB_STATE);
 
         // Create subscribers
         this.subscriberListen = this.connectedNode.createSubscription(
                 Command.class,
-                this.prefix + SUB_CMD,
+                this.configuration.getPrefix() + SUB_CMD,
                 this
         );
     }
 
     private Command makeSay() {
-        Command command = new Command(); // this.connectedNode.getTopicMessageFactory().newFromType(Command._TYPE);
-        command.setContext(new Context());
+        Command command = new Command();
         command.getContext().setWho(IaNode.botname);
         command.setAction(CommandUtil.Action.SAY.getValue());
         return command;
@@ -243,20 +245,21 @@ public class IaNode implements Consumer<Command> { //extends AbstractNodeMain im
     /**
      * Load parameters of node
      */
-    private void loadParameters() {
+    @Override
+    public void loadParameters() {
         // Prefix
 //        this.prefix = String.format("/%s/", this.connectedNode
 //                .getParameterTree().getString("~tf_prefix", ""));
 
 //        if (this.prefix.equals("//")) // Hack
-            this.prefix = "/";
+//            this.prefix = "/";
 
         // Path resources
 //        this.path = this.connectedNode.getParameterTree()
 //                .getString("~" + IaConfig.RES_PATH, this.path);
 //        this.connectedNode.getParameterTree().set("~" + IaConfig.RES_PATH, this.path);
 
-        this.logI(String.format("prefix : %s", this.prefix));
+//        this.logI(String.format("prefix : %s", this.prefix));
 
         // Connect to dynamic reconfigure
 //        this.reconfigServer = new Server<IaConfig>(
@@ -266,7 +269,6 @@ public class IaNode implements Consumer<Command> { //extends AbstractNodeMain im
     /**
      * On new message is throw.
      */
-    @Override
     public void accept(Command command) {
         String user = command.getContext().getWho();
         String where = command.getContext().getWhere();
@@ -346,22 +348,6 @@ public class IaNode implements Consumer<Command> { //extends AbstractNodeMain im
         }
     }
 
-    /**
-     * On node shutdown is throw.
-     */
-//    @Override
-    public void onShutdown(Node node) {
-        this.persistBotState();
-        this.sayGoodbye();
-
-//        this.reconfigServer.close();
-//        super.onShutdown(node);
-//        try {
-//            Thread.sleep(1);
-//        } catch (InterruptedException e) {
-//        }
-    }
-
 //    @Override
 //    public IaConfig onReconfigure(IaConfig config, int level) {
 //        this.path = config.getString(IaConfig.RES_PATH, this.path);
@@ -373,49 +359,7 @@ public class IaNode implements Consumer<Command> { //extends AbstractNodeMain im
 //        return config;
 //    }
 
-    /**
-     * Log a message with debug log level.
-     *
-     * @param message this message
-     */
-    public void logD(Object message) {
-        this.connectedNode.getLog().debug(message);
-    }
-
-    /**
-     * Log a message with info log level.
-     *
-     * @param message this message
-     */
-    public void logI(Object message) {
-        this.connectedNode.getLog().info(message);
-    }
-
-    /**
-     * Log a message with error log level.
-     *
-     * @param message this message
-     */
-    public void logE(Object message) {
-        this.connectedNode.getLog().error(message);
-    }
-
-    /**
-     * Log a message with error log level.
-     *
-     * @param message this message
-     */
-    public void logE(Exception message) {
-        this.connectedNode.getLog().error(message.getStackTrace());
-    }
-
     public static void main(String[] args) throws InterruptedException {
-        logger.setLevel(Level.ALL);
-        ConsoleHandler handler = new ConsoleHandler();
-        handler.setFormatter(new SimpleFormatter());
-        logger.addHandler(handler);
-        handler.setLevel(Level.ALL);
-
         // Initialize RCL
         RCLJava.rclJavaInit();
 
