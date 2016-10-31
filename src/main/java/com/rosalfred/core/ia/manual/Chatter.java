@@ -2,7 +2,6 @@ package com.rosalfred.core.ia.manual;
 
 import java.util.Scanner;
 
-import org.ros2.rcljava.qos.QoSProfile;
 import org.ros2.rcljava.RCLJava;
 import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.node.topic.Consumer;
@@ -13,7 +12,6 @@ import org.rosbuilding.common.media.CommandUtil;
 import com.rosalfred.core.ia.IaNode;
 
 import smarthome_comm_msgs.msg.Command;
-import smarthome_comm_msgs.msg.Context;
 
 public class Chatter {
 
@@ -32,7 +30,6 @@ public class Chatter {
         final Node node = RCLJava.createNode("talker ia");
 
         Command msg = new Command();
-        msg.setContext(new Context());
         msg.getContext().setWho("Mickael");
         msg.getContext().setWhere("/home/salon/");
         msg.setAction(CommandUtil.Action.SAY.getValue());
@@ -40,8 +37,7 @@ public class Chatter {
 
         Publisher<Command> chatter_pub = node.<Command>createPublisher(
                         Command.class,
-                        "/" + IaNode.SUB_CMD,
-                        QoSProfile.DEFAULT);
+                        "/" + IaNode.SUB_CMD);
 
         Subscription<Command> sub = node.<Command>createSubscription(
                         Command.class,
@@ -51,8 +47,7 @@ public class Chatter {
                             public void accept(Command msg) {
                                 Listener.chatterCallback(msg);
                             }
-                        },
-                        QoSProfile.DEFAULT);
+                        });
 
         String value;
 
@@ -66,7 +61,6 @@ public class Chatter {
         th.start();
 
         // Talker
-
         while(RCLJava.ok()) {
             value =scanner.nextLine();
 

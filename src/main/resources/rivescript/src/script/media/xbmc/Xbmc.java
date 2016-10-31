@@ -14,10 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 
-import org.ros2.rcljava.qos.QoSProfile;
 import org.ros2.rcljava.node.service.Client;
 import org.rosbuilding.common.ISystem;
 import org.rosbuilding.common.media.CommandUtil;
@@ -49,7 +46,7 @@ import smarthome_comm_msgs.msg.Command;
 public class Xbmc extends CommandPublisher {
 
     private final static String nodePath = "/home/salon/xbmc/";
-    private static Client<MediaGetItems> service;
+    private Client<MediaGetItems> service;
 
     public Xbmc(RiveScript rivescript) {
         super(rivescript);
@@ -63,8 +60,7 @@ public class Xbmc extends CommandPublisher {
             try {
                 service = this.node.<MediaGetItems>createClient(
                         MediaGetItems.class,
-                        nodePath + "get_items",
-                        QoSProfile.SERVICES_DEFAULT);
+                        nodePath + "get_items");
             } catch (Exception e) {
                 this.node.getLog().error("Service Xbmc get_items not found !");
             }
@@ -456,14 +452,6 @@ public class Xbmc extends CommandPublisher {
     private List<MediaItem> getMediaItems(MediaGetItems_Request request) {
         final List<MediaItem> result = new ArrayList<MediaItem>();
 
-        final Semaphore semaphore = new Semaphore(1);
-
-        try {
-            semaphore.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         Future<MediaGetItems_Response> future = service.sendRequest(request);
         if (future != null) {
             try {
@@ -478,13 +466,6 @@ public class Xbmc extends CommandPublisher {
             }
         } else {
             System.out.println("add_two_ints_client was interrupted. Exiting.");
-        }
-        semaphore.release();
-
-        try {
-            semaphore.tryAcquire(5000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
 
         return result;

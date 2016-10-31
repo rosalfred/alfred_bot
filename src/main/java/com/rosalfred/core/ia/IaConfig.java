@@ -21,7 +21,7 @@ import org.rosbuilding.common.NodeDriverConfig;
  */
 public class IaConfig extends NodeDriverConfig {
 
-    public static final String PARAM_RES_PATH = "res_path";
+    public static final String PARAM_RES_PATH = "~res_path";
 
     public IaConfig(Node node) {
         super(

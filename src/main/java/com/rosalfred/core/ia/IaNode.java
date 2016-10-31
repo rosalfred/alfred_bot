@@ -26,7 +26,6 @@ import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.node.topic.Consumer;
 import org.ros2.rcljava.node.topic.Publisher;
 import org.ros2.rcljava.node.topic.Subscription;
-
 import org.rosbuilding.common.BaseSimpleNode;
 import org.rosbuilding.common.media.CommandUtil;
 
@@ -77,7 +76,7 @@ public class IaNode extends BaseSimpleNode<IaConfig> implements Consumer<Command
 
     @Override
     protected IaConfig getConfig() {
-        return new IaConfig(this.connectedNode);
+        return new IaConfig(this.getConnectedNode());
     }
 
     /**
@@ -87,6 +86,7 @@ public class IaNode extends BaseSimpleNode<IaConfig> implements Consumer<Command
     public void onShutdown(Node node) {
         this.persistBotState();
         this.sayGoodbye();
+        super.onShutdown(node);
     }
 
     protected String getPath() {
@@ -201,7 +201,9 @@ public class IaNode extends BaseSimpleNode<IaConfig> implements Consumer<Command
         }
     }
 
+    @Override
     protected void initTopics() {
+        super.initTopics();
         this.logI("Start Topics (publishers/subscribers)...");
 
         // Create publishers
@@ -247,6 +249,7 @@ public class IaNode extends BaseSimpleNode<IaConfig> implements Consumer<Command
      */
     @Override
     public void loadParameters() {
+        super.loadParameters();
         // Prefix
 //        this.prefix = String.format("/%s/", this.connectedNode
 //                .getParameterTree().getString("~tf_prefix", ""));
@@ -269,29 +272,36 @@ public class IaNode extends BaseSimpleNode<IaConfig> implements Consumer<Command
     /**
      * On new message is throw.
      */
-    public void accept(Command command) {
-        String user = command.getContext().getWho();
-        String where = command.getContext().getWhere();
+    @Override
+    public void accept(final Command command) {
+        final String user = command.getContext().getWho();
+        final String where = command.getContext().getWhere();
 
-        if (this.bot != null) {
+        Thread thTmp = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+
+        if (bot != null) {
             String speech = command.getSubject();
-            this.logI(String.format("from %s : %s", user, speech));
+            logI(String.format("from %s : %s", user, speech));
 
-            this.bot.setUservar(user, VAR_CONTEXT_WHERE, where);
+            bot.setUservar(user, VAR_CONTEXT_WHERE, where);
 
             // TODO move now to Rive workflow
             switch (speech) {
             case "/reload":
-                this.initBot();
+                initBot();
                 break;
             case "/save":
-                this.persistBotState();
+                persistBotState();
                 break;
             case "/load":
-                this.reloadBotState();
+                reloadBotState();
                 break;
             case "/status":
-                this.reloadBotState();
+                reloadBotState();
                 break;
             default:
                 if (!user.equals(IaNode.botname)) {
@@ -300,7 +310,7 @@ public class IaNode extends BaseSimpleNode<IaConfig> implements Consumer<Command
 
                     BotReply responce = new BotReply("ERR: Sentence not work !!");
                     for (String sentence : res) {
-                        responce = this.bot.reply(user, sentence);
+                        responce = bot.reply(user, sentence);
                     }
                     command.getContext().setWho(IaNode.botname);
 
@@ -308,9 +318,9 @@ public class IaNode extends BaseSimpleNode<IaConfig> implements Consumer<Command
                             && !responce.getReply().startsWith("ERR:")) {
 
                         command.setSubject(responce.getReply());
-                        this.publisherSay.publish(command);
+                        publisherSay.publish(command);
 
-                        this.logI(String.format("from %s to %s : %s",
+                        logI(String.format("from %s to %s : %s",
                                 command.getContext().getWho(),
                                 user,
                                 command.getSubject()));
@@ -319,13 +329,13 @@ public class IaNode extends BaseSimpleNode<IaConfig> implements Consumer<Command
                             String content = String.format("[%s]",
                                     Joiner.on(",").join(responce.getIntents()));
 
-                            command = new Command(); // this.publisherSay.newMessage();
-                            command.getContext().setWhere(where);
-                            command.getContext().setWho(IaNode.botname);
-                            command.setAction("show");
-                            command.setSubject(content);
+                            Command commandTmp = new Command(); // this.publisherSay.newMessage();
+                            commandTmp.getContext().setWhere(where);
+                            commandTmp.getContext().setWho(IaNode.botname);
+                            commandTmp.setAction("show");
+                            commandTmp.setSubject(content);
 
-                            this.publisherSay.publish(command);
+                            publisherSay.publish(commandTmp);
                         }
 
                     } else {
@@ -333,19 +343,25 @@ public class IaNode extends BaseSimpleNode<IaConfig> implements Consumer<Command
                                 || responce.getReply().contains("ERR: No Reply Matched")) {
                             // TODO Learn...
                         } else if (responce.getReply().startsWith("ERR:")) {
-                            this.logE(String.format("bot error : %s", responce));
+                            logE(String.format("bot error : %s", responce));
                         } else {
-                            this.logI(String.format("bot command : %s", responce));
+                            logI(String.format("bot command : %s", responce));
                         }
                     }
                 }
             }
         } else {
             command.setSubject("IA loading...");
-            this.publisherSay.publish(command);
-            this.logI(String.format("from %s to %s : %s",
+            publisherSay.publish(command);
+            logI(String.format("from %s to %s : %s",
                     command.getContext().getWho(), user, command.getSubject()));
         }
+
+
+            }
+        });
+
+        thTmp.start();
     }
 
 //    @Override
@@ -369,11 +385,10 @@ public class IaNode extends BaseSimpleNode<IaConfig> implements Consumer<Command
         IaNode ia = new IaNode();
         ia.onStart(node);
 
-        Thread.sleep(5000);
-
         RCLJava.spin(node);
 
         ia.onShutdown(node);
+        node.dispose();
         RCLJava.shutdown();
     }
 }
