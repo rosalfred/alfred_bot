@@ -46,7 +46,6 @@ import smarthome_comm_msgs.msg.Command;
 public class Xbmc extends CommandPublisher {
 
     private final static String nodePath = "/home/salon/xbmc/";
-    private Client<MediaGetItems> service;
 
     public Xbmc(RiveScript rivescript) {
         super(rivescript);
@@ -55,16 +54,6 @@ public class Xbmc extends CommandPublisher {
     @Override
     protected void initialize() {
         super.initialize();
-
-        if (this.node != null) {
-            try {
-                service = this.node.<MediaGetItems>createClient(
-                        MediaGetItems.class,
-                        nodePath + "get_items");
-            } catch (Exception e) {
-                this.node.getLog().error("Service Xbmc get_items not found !");
-            }
-        }
     }
 
     public void startLibrary() {
@@ -81,10 +70,10 @@ public class Xbmc extends CommandPublisher {
         this.open(uri, null);
     }
 
-    public void open(String uri, String type) {
+    public void open(String uri, MediaType type) {
         Command message = null;
         try {
-            message = CommandUtil.toCommand(this.node, IPlayer.OP_OPEN, new URI(uri), type);
+            message = CommandUtil.toCommand(this.node, IPlayer.OP_OPEN, new URI(uri), type.getValue());
         } catch (URISyntaxException e) {
             this.node.getLog().error("Data no a uri !!", e);
         }
@@ -137,6 +126,17 @@ public class Xbmc extends CommandPublisher {
         String type = this.getUserParam(RsContext.FIND2);
         if (type == null) {
             type = "";
+        }
+
+        Client<MediaGetItems> service = null;
+        if (this.node != null) {
+            try {
+                service = this.node.<MediaGetItems>createClient(
+                        MediaGetItems.class,
+                        nodePath + "get_items");
+            } catch (Exception e) {
+                this.node.getLog().error("Service Xbmc get_items not found !");
+            }
         }
 
         List<MediaItem> items = null;
@@ -294,8 +294,19 @@ public class Xbmc extends CommandPublisher {
         launch = RsContext.normalize(launch).toLowerCase();
         String title = null;
 
+        Client<MediaGetItems> service = null;
+        if (this.node != null) {
+            try {
+                service = this.node.<MediaGetItems>createClient(
+                        MediaGetItems.class,
+                        nodePath + "get_items");
+            } catch (Exception e) {
+                this.node.getLog().error("Service Xbmc get_items not found !");
+            }
+        }
+
         if (service != null) {
-            MediaGetItems_Request request = new MediaGetItems_Request(); // service.newMessage();
+            MediaGetItems_Request request = new MediaGetItems_Request();
             request.getItem().getMediatype().setValue(MediaType.VIDEO_MOVIE);
             Movie media = new Movie();
 
@@ -326,7 +337,7 @@ public class Xbmc extends CommandPublisher {
                     if (title.contains(launch)) {
                         this.open(
                                 "media://" + String.valueOf(item.getMediaid()),
-                                "MediaMovie");
+                                request.getItem().getMediatype()); // "MediaMovie"
                         break;
                     }
                 }
@@ -363,7 +374,7 @@ public class Xbmc extends CommandPublisher {
                 if (title.contains(launch)) {
                     this.open(
                             "media://" + String.valueOf(item.getMediaid()),
-                            "MediaMovie");
+                            request.getItem().getMediatype()); // "MediaMovie"
                     break;
                 }
             }
@@ -410,7 +421,7 @@ public class Xbmc extends CommandPublisher {
                 if (title.contains(show)) {
                     this.open(
                             "media://" + String.valueOf(item.getMediaid()),
-                            "MediaMovie");
+                            request.getItem().getMediatype()); // "MediaMovie"
                     result = 1;
                     break;
                 }
@@ -440,7 +451,7 @@ public class Xbmc extends CommandPublisher {
                 if (title.contains(launch)) {
                     this.open(
                             "media://" + String.valueOf(item.getMediaid()),
-                            "MediaAudioAlbum");
+                            request.getItem().getMediatype()); // "MediaAudioAlbum"
                     break;
                 }
             }
@@ -451,6 +462,17 @@ public class Xbmc extends CommandPublisher {
 
     private List<MediaItem> getMediaItems(MediaGetItems_Request request) {
         final List<MediaItem> result = new ArrayList<MediaItem>();
+
+        Client<MediaGetItems> service = null;
+        if (this.node != null) {
+            try {
+                service = this.node.<MediaGetItems>createClient(
+                        MediaGetItems.class,
+                        nodePath + "get_items");
+            } catch (Exception e) {
+                this.node.getLog().error("Service Xbmc get_items not found !");
+            }
+        }
 
         Future<MediaGetItems_Response> future = service.sendRequest(request);
         if (future != null) {
