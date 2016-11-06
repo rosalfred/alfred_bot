@@ -75,7 +75,7 @@ public class IaNode extends BaseSimpleNode<IaConfig> implements Consumer<Command
     }
 
     @Override
-    protected IaConfig getConfig() {
+    protected IaConfig makeConfiguration() {
         return new IaConfig(this.getConnectedNode());
     }
 
