@@ -45,7 +45,7 @@ import smarthome_comm_msgs.msg.Command;
  */
 public class Xbmc extends CommandPublisher {
 
-    private final static String nodePath = "/home/salon/xbmc/";
+    private final static String nodePath = "/home/salon/kodi/";
 
     public Xbmc(RiveScript rivescript) {
         super(rivescript);
@@ -165,6 +165,8 @@ public class Xbmc extends CommandPublisher {
 
             request.getItem().setData(media.toJson());
             items = this.getMediaItems(request);
+
+            service.dispose();
         } else {
             items = new ArrayList<MediaItem>();
         }
@@ -342,6 +344,7 @@ public class Xbmc extends CommandPublisher {
                     }
                 }
             }
+            service.dispose();
         }
 
         return new BotReply(title);
@@ -480,12 +483,11 @@ public class Xbmc extends CommandPublisher {
                 List<MediaItem> items = future.get().getItems();
                 result.addAll(items);
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
+            service.dispose();
         } else {
             System.out.println("add_two_ints_client was interrupted. Exiting.");
         }

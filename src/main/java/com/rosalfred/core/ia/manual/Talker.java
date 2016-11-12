@@ -3,6 +3,7 @@ package com.rosalfred.core.ia.manual;
 import java.util.Scanner;
 
 import org.ros2.rcljava.RCLJava;
+import org.ros2.rcljava.namespace.GraphName;
 import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.node.topic.Publisher;
 import org.rosbuilding.common.media.CommandUtil;
@@ -25,7 +26,7 @@ public class Talker {
 
         Command msg = new Command();
         msg.getContext().setWho("Mickael");
-        msg.getContext().setWhere("/home/salon/");
+        msg.getContext().setWhere("/home/salon");
         msg.setAction(CommandUtil.Action.SAY.getValue());
         msg.setSubject("");
 
@@ -33,7 +34,7 @@ public class Talker {
         Publisher<Command> chatter_pub =
                 node.<Command>createPublisher(
                         Command.class,
-                        "/" + IaNode.SUB_CMD);
+                        GraphName.getFullName(node, IaNode.SUB_CMD, null));
 
         String value;
         while(RCLJava.ok()) {

@@ -22,6 +22,7 @@ import com.rivescript.ClientManager;
 
 
 import org.ros2.rcljava.RCLJava;
+import org.ros2.rcljava.namespace.GraphName;
 import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.node.topic.Consumer;
 import org.ros2.rcljava.node.topic.Publisher;
@@ -44,8 +45,8 @@ import smarthome_comm_msgs.msg.Command;
 public class IaNode extends BaseSimpleNode<IaConfig> implements Consumer<Command> {
 
     public static final String VAR_CONTEXT_WHERE    = "context-where";
-    public static final String SUB_CMD              = "speech";
-    public static final String PUB_STATE            = "robotsay";
+    public static final String SUB_CMD              = "/speech";
+    public static final String PUB_STATE            = "/robotsay";
     private static final String PERSITE_FILE        = "saveContext.xml";
 
     public static String botname = "Alfred";
@@ -209,12 +210,12 @@ public class IaNode extends BaseSimpleNode<IaConfig> implements Consumer<Command
         // Create publishers
         this.publisherSay = this.connectedNode.createPublisher(
                 Command.class,
-                this.configuration.getPrefix() + PUB_STATE);
+                GraphName.getFullName(this.connectedNode, PUB_STATE, null));
 
         // Create subscribers
         this.subscriberListen = this.connectedNode.createSubscription(
                 Command.class,
-                this.configuration.getPrefix() + SUB_CMD,
+                GraphName.getFullName(this.connectedNode, SUB_CMD, null),
                 this
         );
     }
@@ -380,7 +381,7 @@ public class IaNode extends BaseSimpleNode<IaConfig> implements Consumer<Command
         RCLJava.rclJavaInit();
 
         // Let's create a Node
-        Node node = RCLJava.createNode("local_ia");
+        Node node = RCLJava.createNode("/home", "ia_base");
 
         IaNode ia = new IaNode();
         ia.onStart(node);

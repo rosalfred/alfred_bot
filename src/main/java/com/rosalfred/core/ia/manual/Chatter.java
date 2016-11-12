@@ -3,6 +3,7 @@ package com.rosalfred.core.ia.manual;
 import java.util.Scanner;
 
 import org.ros2.rcljava.RCLJava;
+import org.ros2.rcljava.namespace.GraphName;
 import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.node.topic.Consumer;
 import org.ros2.rcljava.node.topic.Publisher;
@@ -31,17 +32,17 @@ public class Chatter {
 
         Command msg = new Command();
         msg.getContext().setWho("Mickael");
-        msg.getContext().setWhere("/home/salon/");
+        msg.getContext().setWhere("/home/salon");
         msg.setAction(CommandUtil.Action.SAY.getValue());
         msg.setSubject("");
 
         Publisher<Command> chatter_pub = node.<Command>createPublisher(
                         Command.class,
-                        "/" + IaNode.SUB_CMD);
+                        GraphName.getFullName(node, IaNode.SUB_CMD, null));
 
         Subscription<Command> sub = node.<Command>createSubscription(
                         Command.class,
-                        "/" + IaNode.PUB_STATE,
+                        GraphName.getFullName(node, IaNode.PUB_STATE, null),
                         new Consumer<Command>() {
                             @Override
                             public void accept(Command msg) {

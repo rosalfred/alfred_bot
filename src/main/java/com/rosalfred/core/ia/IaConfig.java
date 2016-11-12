@@ -27,6 +27,7 @@ public class IaConfig extends NodeDriverConfig {
         super(
                 node,
                 "/",
+                "alfred_bot",
                 "fixed_frame",
                 1,
                 "00:00:00:00:00:00");

@@ -1,6 +1,7 @@
 package com.rosalfred.core.ia.manual;
 
 import org.ros2.rcljava.RCLJava;
+import org.ros2.rcljava.namespace.GraphName;
 import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.node.topic.Consumer;
 import org.ros2.rcljava.node.topic.Subscription;
@@ -25,7 +26,7 @@ public class Listener {
 
         Subscription<Command> sub = node.<Command>createSubscription(
                 Command.class,
-                "/" + IaNode.PUB_STATE,
+                GraphName.getFullName(node, IaNode.PUB_STATE, null),
                 new Consumer<Command>() {
                     @Override
                     public void accept(Command msg) {
