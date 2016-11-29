@@ -235,7 +235,7 @@ public class RiveScript {
             }
         });
 
-    	if (filesRive.length > 0) {
+    	if (filesRive != null && filesRive.length > 0) {
     		result.addAll(Arrays.asList(filesRive));
     	}
 
