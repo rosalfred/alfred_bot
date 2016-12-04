@@ -43,9 +43,17 @@ ament {
     generateEclipse = true
 
     scripts {
-        main {
-            applicationName = project.name
+        alfred_bot {
             mainClassName = 'com.rosalfred.core.ia.IaNode'
+        }
+        alfred_chatter {
+            mainClassName = 'com.rosalfred.core.ia.manual.Chatter'
+        }
+        alfred_listener {
+            mainClassName = 'com.rosalfred.core.ia.manual.Listener'
+        }
+        alfred_talker {
+            mainClassName = 'com.rosalfred.core.ia.manual.Talker'
         }
     }
 }
