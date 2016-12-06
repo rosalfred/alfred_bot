@@ -24,19 +24,21 @@ sourceSets {
 }
 
 dependencies {
-    compile 'joda-time:joda-time:2.3'
-    compile 'javax.mail:mail:1.4.5'
-    compile 'org.json:json:20090211'
+    compile 'joda-time:joda-time:2.+'
     compile 'com.google.guava:guava:19+'
-    compile 'com.google.code.gson:gson:2.7'
-    compile 'mysql:mysql-connector-java:(5.1,)'
-    compile 'commons-logging:commons-logging:1.2'
+    compile 'com.google.code.gson:gson:2.+'
+
+    compile 'javax.mail:mail:1.+'
+    compile 'org.json:json:20090211'
+    compile 'mysql:mysql-connector-java:5.+'
+    compile 'commons-logging:commons-logging:1.+'
+
     if (new File('lib/rivescript-java/build.gradle').exists()) {
         compile project(':lib:rivescript-java')
     }
-    compile fileTree(dir: 'lib', include: '*.jar')
 
-    testCompile 'junit:junit:4.12'
+    compile fileTree(dir: 'lib', include: '*.jar')
+    testCompile 'junit:junit:4.+'
 }
 
 ament {
