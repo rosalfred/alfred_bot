@@ -5,7 +5,7 @@ import java.util.Scanner;
 import org.ros2.rcljava.RCLJava;
 import org.ros2.rcljava.namespace.GraphName;
 import org.ros2.rcljava.node.Node;
-import org.ros2.rcljava.node.topic.Consumer;
+import org.ros2.rcljava.node.topic.SubscriptionCallback;
 import org.ros2.rcljava.node.topic.Publisher;
 import org.ros2.rcljava.node.topic.Subscription;
 import org.rosbuilding.common.media.CommandUtil;
@@ -43,9 +43,9 @@ public class Chatter {
         Subscription<Command> sub = node.<Command>createSubscription(
                         Command.class,
                         GraphName.getFullName(node, IaNode.PUB_STATE, null),
-                        new Consumer<Command>() {
+                        new SubscriptionCallback<Command>() {
                             @Override
-                            public void accept(Command msg) {
+                            public void dispatch(Command msg) {
                                 Listener.chatterCallback(msg);
                             }
                         });

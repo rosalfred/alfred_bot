@@ -24,7 +24,7 @@ import com.rivescript.ClientManager;
 import org.ros2.rcljava.RCLJava;
 import org.ros2.rcljava.namespace.GraphName;
 import org.ros2.rcljava.node.Node;
-import org.ros2.rcljava.node.topic.Consumer;
+import org.ros2.rcljava.node.topic.SubscriptionCallback;
 import org.ros2.rcljava.node.topic.Publisher;
 import org.ros2.rcljava.node.topic.Subscription;
 import org.rosbuilding.common.BaseSimpleNode;
@@ -42,7 +42,7 @@ import smarthome_comm_msgs.msg.Command;
  * @author Erwan Lehuitouze <erwan.lehuitouze@gmail.com>
  *
  */
-public class IaNode extends BaseSimpleNode<IaConfig> implements Consumer<Command> {
+public class IaNode extends BaseSimpleNode<IaConfig> implements SubscriptionCallback<Command> {
 
     public static final String VAR_CONTEXT_WHERE    = "context-where";
     public static final String SUB_CMD              = "/speech";
@@ -274,7 +274,7 @@ public class IaNode extends BaseSimpleNode<IaConfig> implements Consumer<Command
      * On new message is throw.
      */
     @Override
-    public void accept(final Command command) {
+    public void dispatch(final Command command) {
         final String user = command.getContext().getWho();
         final String where = command.getContext().getWhere();
 
