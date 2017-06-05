@@ -15,6 +15,7 @@ import com.rosalfred.core.ia.IaNode;
 import smarthome_comm_msgs.msg.Command;
 
 public class Chatter {
+    private static final String NODE_NAME = Chatter.class.getSimpleName().toLowerCase();
 
     public static void chatterCallback(Command msg) {
         System.out.println("> " + msg.getSubject());
@@ -28,7 +29,7 @@ public class Chatter {
         RCLJava.rclJavaInit();
 
         // Let's create a Node
-        final Node node = RCLJava.createNode("talker ia");
+        final Node node = RCLJava.createNode(NODE_NAME+"_bot");
 
         Command msg = new Command();
         msg.getContext().setWho("Mickael");

@@ -13,6 +13,7 @@ import com.rosalfred.core.ia.IaNode;
 import smarthome_comm_msgs.msg.Command;
 
 public class Talker {
+    private static final String NODE_NAME = Talker.class.getSimpleName().toLowerCase();
 
     public static void main(String[] args) throws InterruptedException {
 
@@ -22,7 +23,7 @@ public class Talker {
         RCLJava.rclJavaInit();
 
         // Let's create a Node
-        Node node = RCLJava.createNode("talker ia");
+        Node node = RCLJava.createNode(NODE_NAME+"_bot");
 
         Command msg = new Command();
         msg.getContext().setWho("Mickael");

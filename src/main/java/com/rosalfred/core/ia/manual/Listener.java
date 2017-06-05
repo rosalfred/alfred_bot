@@ -11,7 +11,7 @@ import com.rosalfred.core.ia.IaNode;
 import smarthome_comm_msgs.msg.Command;
 
 public class Listener {
-    private static final String NODE_NAME = Listener.class.getName();
+    private static final String NODE_NAME = Listener.class.getSimpleName().toLowerCase();
 
     public static void chatterCallback(Command msg) {
         System.out.println("Alfred say > " + msg.getSubject());
@@ -22,7 +22,7 @@ public class Listener {
         RCLJava.rclJavaInit();
 
         // Let's create a new Node
-        Node node = RCLJava.createNode(NODE_NAME);
+        Node node = RCLJava.createNode(NODE_NAME+"_bot");
 
         Subscription<Command> sub = node.<Command>createSubscription(
                 Command.class,

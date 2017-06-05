@@ -84,10 +84,10 @@ public class IaNode extends BaseSimpleNode<IaConfig> implements SubscriptionCall
      * On node shutdown is throw.
      */
     @Override
-    public void onShutdown(Node node) {
+    public void onShutdown() {
         this.persistBotState();
         this.sayGoodbye();
-        super.onShutdown(node);
+        super.onShutdown();
     }
 
     protected String getPath() {
@@ -377,19 +377,19 @@ public class IaNode extends BaseSimpleNode<IaConfig> implements SubscriptionCall
 //    }
 
     public static void main(String[] args) throws InterruptedException {
-        // Initialize RCL
         RCLJava.rclJavaInit();
 
-        // Let's create a Node
-        Node node = RCLJava.createNode("/home", "ia_base");
+        final IaNode ia = new IaNode();
+        final Node node = RCLJava.createNode("ia_base");
 
-        IaNode ia = new IaNode();
         ia.onStart(node);
+        ia.onStarted();
 
         RCLJava.spin(node);
 
-        ia.onShutdown(node);
-        node.dispose();
+        ia.onShutdown();
+        ia.onShutdowned();
+
         RCLJava.shutdown();
     }
 }

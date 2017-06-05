@@ -1,12 +1,19 @@
+# Gradle
 /bin
 /build
 /.gradle
 /local.properties
-/.settings
-/.idea
+
+# Eclipse
 /.classpath
 *.iml
+/.settings
+/.project
+
+# Ament
+.ament_dependencies.properties
+
+# Android Studio
+/.idea
 *.class
 *.dex
-/res
-*.launch
