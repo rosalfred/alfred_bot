@@ -1,0 +1,29 @@
+! version = 2.0
+
+! array library = library librairie xbmc x.b.m.c.
+! array tv = tv tele television lcd ecran
+! array display = display affiche active
+! array switch = switch pass bascul
+
+! array left = left gauche
+! array right = right droite
+! array up = up haut
+! array down = down bas
+! array select = select validate valider
+! array on = dans sur
+
+! array continue = continue reprendre
+
+// Multimedia base function
+
++ allume la lumiere [*]
+- <call>script.building.light.Light.on()</call>{@congratule moi}
+
++ eteind la lumiere [*]
+- <call>script.building.light.Light.off()</call>{@congratule moi}
+
++ (baisse|diminue) la lumiere [*]
+- <call>script.building.light.Light.down()</call>{@congratule moi}
+
++ augmente la lumiere [*]
+- <call>script.building.light.Light.up()</call>{@congratule moi}
