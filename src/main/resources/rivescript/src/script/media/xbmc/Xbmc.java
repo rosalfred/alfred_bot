@@ -16,10 +16,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.ros2.rcljava.node.service.Client;
-import org.rosbuilding.common.ISystem;
+import org.rosbuilding.common.System;
 import org.rosbuilding.common.media.CommandUtil;
-import org.rosbuilding.common.media.IPlayer;
-import org.rosbuilding.common.media.ISpeaker;
+import org.rosbuilding.common.media.Player;
+import org.rosbuilding.common.media.Speaker;
 import org.rosmultimedia.player.media.model.Media;
 import org.rosmultimedia.player.media.model.Movie;
 import org.rosmultimedia.player.media.model.Song;
@@ -58,12 +58,12 @@ public class Xbmc extends CommandPublisher {
 
     public void startLibrary() {
         // new Onkyo(this.rivescript).startReceiver();
-        this.publish(ISystem.OP_POWER);
+        this.publish(System.OP_POWER);
     }
 
     public void shutdownLibrary() {
         // new Onkyo(this.rivescript).shutdownReceiver();
-        this.publish(ISystem.OP_SHUTDOWN);
+        this.publish(System.OP_SHUTDOWN);
     }
 
     public void open(String uri) {
@@ -73,7 +73,7 @@ public class Xbmc extends CommandPublisher {
     public void open(String uri, MediaType type) {
         Command message = null;
         try {
-            message = CommandUtil.toCommand(this.node, IPlayer.OP_OPEN, new URI(uri), type.getValue());
+            message = CommandUtil.toCommand(this.node, Player.OP_OPEN, new URI(uri), type.getValue());
         } catch (URISyntaxException e) {
             this.node.getLog().error("Data no a uri !!", e);
         }
@@ -82,39 +82,39 @@ public class Xbmc extends CommandPublisher {
     }
 
     public void mute() {
-        this.publish(ISpeaker.OP_MUTE);
+        this.publish(Speaker.OP_MUTE);
     }
 
     public void play() {
-        this.publish(IPlayer.OP_PLAY);
+        this.publish(Player.OP_PLAY);
     }
 
     public void pause() {
-        this.publish(IPlayer.OP_PAUSE);
+        this.publish(Player.OP_PAUSE);
     }
 
     public void stop() {
-        this.publish(IPlayer.OP_STOP);
+        this.publish(Player.OP_STOP);
     }
 
     public void forward() {
-        this.publish(IPlayer.OP_RIGHT);
+        this.publish(Player.OP_RIGHT);
     }
 
     public void backward() {
-        this.publish(IPlayer.OP_LEFT);
+        this.publish(Player.OP_LEFT);
     }
 
     public void up() {
-        this.publish(IPlayer.OP_UP);
+        this.publish(Player.OP_UP);
     }
 
     public void down() {
-        this.publish(IPlayer.OP_DOWN);
+        this.publish(Player.OP_DOWN);
     }
 
     public void select() {
-        this.publish(IPlayer.OP_SELECT);
+        this.publish(Player.OP_SELECT);
     }
 
     public void playto() {
@@ -488,8 +488,6 @@ public class Xbmc extends CommandPublisher {
                 e.printStackTrace();
             }
             service.dispose();
-        } else {
-            System.out.println("add_two_ints_client was interrupted. Exiting.");
         }
 
         return result;

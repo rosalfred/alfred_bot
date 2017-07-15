@@ -335,6 +335,10 @@ public class RiveScript {
         // Map the name to the language.
         if (!this.objects.containsKey(java.getLastCompiledClassName())) {
             this.objects.put(java.getLastCompiledClassName(), TYPE_JAVA);
+
+            for (String method : java.getBotMethods()) {
+                this.objects.put(method, TYPE_JAVA);
+            }
         }
 
         return true;
@@ -2094,7 +2098,7 @@ public class RiveScript {
                     }
                 }
                 else {
-                    reply = reply.replace(tag, "[ERR: Object Not Found]");
+                    reply = reply.replace(tag, "[ERR: Object '" + name + "' Not Found]");
                 }
             }
         }

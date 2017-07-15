@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.rosbuilding.common.media.IPlayer;
+import org.rosbuilding.common.media.Player;
 
 import com.google.gdata.client.youtube.YouTubeService;
 import com.google.gdata.data.MediaContent;
@@ -121,7 +121,7 @@ public class Youtube {
 
         if (src != null && !src.equals("")) {
             new Xbmc(this.rivescript).open(
-                    IPlayer.URI_MEDIA_YOUTUBE + this.getVideoId(src));
+                    Player.URI_MEDIA_YOUTUBE + this.getVideoId(src));
         }
 
         return new BotReply(result);

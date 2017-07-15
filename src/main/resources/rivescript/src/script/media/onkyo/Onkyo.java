@@ -10,9 +10,9 @@ package script.media.onkyo;
 
 import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.node.topic.Publisher;
-import org.rosbuilding.common.ISystem;
+import org.rosbuilding.common.System;
 import org.rosbuilding.common.media.CommandUtil;
-import org.rosbuilding.common.media.ISpeaker;
+import org.rosbuilding.common.media.Speaker;
 
 import com.rosalfred.core.ia.IaNode;
 import com.rosalfred.core.ia.RosRiveScript;
@@ -68,21 +68,21 @@ public class Onkyo {
     }
 
     public void startReceiver() {
-        this.publish(ISystem.OP_POWER);
+        this.publish(System.OP_POWER);
 
         Command command = CommandUtil.toCommand(
                 node,
-                ISpeaker.OP_CHANNEL,
+                Speaker.OP_CHANNEL,
                 "SLI10");
 
         publisher.publish(command);
     }
 
     public void shutdownReceiver() {
-        this.publish(ISystem.OP_SHUTDOWN);
+        this.publish(System.OP_SHUTDOWN);
     }
 
     public void mute() {
-        this.publish(ISpeaker.OP_MUTE);
+        this.publish(Speaker.OP_MUTE);
     }
 }

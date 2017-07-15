@@ -8,10 +8,10 @@
  */
 package script.media;
 
-import org.rosbuilding.common.ISystem;
+import org.rosbuilding.common.System;
 import org.rosbuilding.common.media.CommandUtil;
-import org.rosbuilding.common.media.IPlayer;
-import org.rosbuilding.common.media.ISpeaker;
+import org.rosbuilding.common.media.Player;
+import org.rosbuilding.common.media.Speaker;
 
 import com.google.common.base.Strings;
 import com.rosalfred.core.ia.CommandPublisher;
@@ -45,48 +45,48 @@ public class MediaBot extends CommandPublisher {
 
     // SYSTEM
     public void start() {
-        this.publish(ISystem.OP_POWER);
+        this.publish(System.OP_POWER);
     }
 
     public void shutdown() {
-        this.publish(ISystem.OP_SHUTDOWN);
+        this.publish(System.OP_SHUTDOWN);
     }
 
     // SPEAKER
     public void mute() {
-        this.publish(ISpeaker.OP_MUTE);
+        this.publish(Speaker.OP_MUTE);
     }
 
     // PLAYER
     public void play() {
-        this.publish(IPlayer.OP_PLAY);
+        this.publish(Player.OP_PLAY);
     }
 
     public void pause() {
-        this.publish(IPlayer.OP_PAUSE);
+        this.publish(Player.OP_PAUSE);
     }
 
     public void stop() {
-        this.publish(IPlayer.OP_STOP);
+        this.publish(Player.OP_STOP);
     }
 
     public void forward() {
-        this.publish(IPlayer.OP_RIGHT);
+        this.publish(Player.OP_RIGHT);
     }
 
     public void backward() {
-        this.publish(IPlayer.OP_LEFT);
+        this.publish(Player.OP_LEFT);
     }
 
     public void up() {
-        this.publish(IPlayer.OP_UP);
+        this.publish(Player.OP_UP);
     }
 
     public void down() {
-        this.publish(IPlayer.OP_DOWN);
+        this.publish(Player.OP_DOWN);
     }
 
     public void select() {
-        this.publish(IPlayer.OP_SELECT);
+        this.publish(Player.OP_SELECT);
     }
 }

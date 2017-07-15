@@ -1,5 +1,6 @@
 package com.rosalfred.core.ia.rivescript.lang;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +11,7 @@ import javax.tools.JavaFileObject;
 import javax.tools.ToolProvider;
 
 import com.google.common.base.Strings;
+import com.rosalfred.core.ia.rivescript.BotReply;
 import com.rosalfred.core.ia.rivescript.RiveScript;
 import com.rosalfred.core.ia.rivescript.lang.java.CharSequenceJavaFileObject;
 import com.rosalfred.core.ia.rivescript.lang.java.ClassFileManager;
@@ -81,6 +83,28 @@ public class Java extends JavaHandler {
 
     public String getLastCompiledClassName() {
     	return classname;
+    }
+
+    public List<String> getBotMethods() {
+        List<String> result = new ArrayList<>();
+        Class<?> javaClass = null;
+
+        try {
+            javaClass = Class.forName(this.getLastCompiledClassName(), false, this.getClassLoader());
+        } catch (ClassNotFoundException e) {
+
+        }
+
+        if (javaClass != null) {
+            for (Method method : javaClass.getMethods()) {
+                if (method.getReturnType().equals(BotReply.class) && method.getParameterTypes().length == 0) {
+                    result.add(String.format("%s.%s()", this.classname, method.getName()));
+
+                }
+            }
+        }
+
+        return result;
     }
 
     /**
