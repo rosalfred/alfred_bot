@@ -1,5 +1,16 @@
-plugins {
-    id "org.ros2.rcljava" version "0.5.0"
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+//        mavenLocal()
+    }
+
+    apply from: 'https://gist.githubusercontent.com/Theosakamg/e67a28a61e6775e3129a5746f6d57aee/raw/ros2_java_version.gradle'
+
+    dependencies {
+        classpath lib.rcljava
+//        classpath "org.ros2.rcljava:rclJavaPlugin:${rootProject.config.gradle.rcljava}"
+    }
 }
 
 apply plugin: 'org.ros2.rcljava'
