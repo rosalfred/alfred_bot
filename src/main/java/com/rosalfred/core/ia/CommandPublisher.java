@@ -66,7 +66,7 @@ public abstract class CommandPublisher {
      * @param method
      */
     protected void publish(String method, String uri) {
-        this.node.getLog().info("send sub command : " + method);
+        this.node.getLogger().info("send sub command : " + method);
 
         Command message = new Command();
         message.setAction(IModule.SEP + method);

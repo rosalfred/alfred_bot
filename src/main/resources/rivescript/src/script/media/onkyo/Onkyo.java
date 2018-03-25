@@ -49,7 +49,7 @@ public class Onkyo {
     }
 
     private void publish(String method) {
-        node.getLog().info("send sub command : " + method);
+        node.getLogger().info("send sub command : " + method);
 
         Command message = new Command(); // node.getTopicMessageFactory().newFromType(Command._TYPE);
         String user = this.rivescript.getCurrentUser();

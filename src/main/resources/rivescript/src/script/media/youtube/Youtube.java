@@ -204,7 +204,7 @@ public class Youtube {
                 try {
                     youtube = new URL(youtubeUrl);
                 } catch (MalformedURLException e) {
-                    this.rivescript.getNode().getLog().error(
+                    this.rivescript.getNode().getLogger().error(
                             "Bad Youtube url + " + youtubeUrl);
                 }
 

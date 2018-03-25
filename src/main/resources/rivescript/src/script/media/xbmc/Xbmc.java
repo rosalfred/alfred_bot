@@ -75,7 +75,7 @@ public class Xbmc extends CommandPublisher {
         try {
             message = CommandUtil.toCommand(this.node, Player.OP_OPEN, new URI(uri), type.getValue());
         } catch (URISyntaxException e) {
-            this.node.getLog().error("Data no a uri !!", e);
+            this.node.getLogger().error("Data no a uri !!", e);
         }
 
         this.publish(message);
@@ -135,7 +135,7 @@ public class Xbmc extends CommandPublisher {
                         MediaGetItems.class,
                         nodePath + "get_items");
             } catch (Exception e) {
-                this.node.getLog().error("Service Xbmc get_items not found !");
+                this.node.getLogger().error("Service Xbmc get_items not found !");
             }
         }
 
@@ -303,7 +303,7 @@ public class Xbmc extends CommandPublisher {
                         MediaGetItems.class,
                         nodePath + "get_items");
             } catch (Exception e) {
-                this.node.getLog().error("Service Xbmc get_items not found !");
+                this.node.getLogger().error("Service Xbmc get_items not found !");
             }
         }
 
@@ -473,7 +473,7 @@ public class Xbmc extends CommandPublisher {
                         MediaGetItems.class,
                         nodePath + "get_items");
             } catch (Exception e) {
-                this.node.getLog().error("Service Xbmc get_items not found !");
+                this.node.getLogger().error("Service Xbmc get_items not found !");
             }
         }
 
